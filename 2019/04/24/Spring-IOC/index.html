@@ -96,18 +96,20 @@
 
 
 
-  <meta name="description" content="spring IOC  是水平里面非常核心的概念。">
-<meta name="keywords" content="spring、分布式、架构、">
+  <meta name="description" content="一、鸟瞰图 二、组件1、 核心容器 spring-core, spring-beans 这两个模块是Spring的基石，里面包括了IOC，BeanFactory等核心概念。 spring-context 构建与core和bean基础之上，主要是提供了供程序员使用的ApplicationContext。  spring-expression 强大的表达式语言，供Spring对于各种文件中变量的访问和">
+<meta name="keywords" content="基础">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring IOC">
+<meta property="og:title" content="Spring 概述">
 <meta property="og:url" content="http://yoursite.com/2019/04/24/Spring-IOC/index.html">
 <meta property="og:site_name" content="xiaofang&#39;s blog">
-<meta property="og:description" content="spring IOC  是水平里面非常核心的概念。">
+<meta property="og:description" content="一、鸟瞰图 二、组件1、 核心容器 spring-core, spring-beans 这两个模块是Spring的基石，里面包括了IOC，BeanFactory等核心概念。 spring-context 构建与core和bean基础之上，主要是提供了供程序员使用的ApplicationContext。  spring-expression 强大的表达式语言，供Spring对于各种文件中变量的访问和">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-04-24T09:12:16.749Z">
+<meta property="og:image" content="https://docs.spring.io/spring/docs/4.3.23.RELEASE/spring-framework-reference/htmlsingle/images/spring-overview.png">
+<meta property="og:updated_time" content="2019-04-25T03:52:40.411Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring IOC">
-<meta name="twitter:description" content="spring IOC  是水平里面非常核心的概念。">
+<meta name="twitter:title" content="Spring 概述">
+<meta name="twitter:description" content="一、鸟瞰图 二、组件1、 核心容器 spring-core, spring-beans 这两个模块是Spring的基石，里面包括了IOC，BeanFactory等核心概念。 spring-context 构建与core和bean基础之上，主要是提供了供程序员使用的ApplicationContext。  spring-expression 强大的表达式语言，供Spring对于各种文件中变量的访问和">
+<meta name="twitter:image" content="https://docs.spring.io/spring/docs/4.3.23.RELEASE/spring-framework-reference/htmlsingle/images/spring-overview.png">
 
 
 
@@ -127,7 +129,7 @@
   };
 </script>
 
-  <title>Spring IOC | xiaofang's blog</title>
+  <title>Spring 概述 | xiaofang's blog</title>
   
 
 
@@ -344,7 +346,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Spring IOC
+          <h1 class="post-title" itemprop="name headline">Spring 概述
 
               
             
@@ -370,12 +372,24 @@
                 
               
 
-              <time title="创建时间：2019-04-24 16:53:06 / 修改时间：17:12:16" itemprop="dateCreated datePublished" datetime="2019-04-24T16:53:06+08:00">2019-04-24</time>
+              <time title="创建时间：2019-04-24 16:53:06" itemprop="dateCreated datePublished" datetime="2019-04-24T16:53:06+08:00">2019-04-24</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-25 11:52:40" itemprop="dateModified" datetime="2019-04-25T11:52:40+08:00">2019-04-25</time>
               
             
           </span>
@@ -407,6 +421,17 @@
 
           
           
+            <span id="/2019/04/24/Spring-IOC/" class="leancloud_visitors" data-flag-title="Spring 概述">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
 
           
           
@@ -426,7 +451,33 @@
       
 
       
-        <p>spring IOC  是水平里面非常核心的概念。</p>
+        <h2 id="一、鸟瞰图"><a href="#一、鸟瞰图" class="headerlink" title="一、鸟瞰图"></a>一、鸟瞰图</h2><p><img src="https://docs.spring.io/spring/docs/4.3.23.RELEASE/spring-framework-reference/htmlsingle/images/spring-overview.png" alt></p>
+<h2 id="二、组件"><a href="#二、组件" class="headerlink" title="二、组件"></a>二、组件</h2><h3 id="1、-核心容器"><a href="#1、-核心容器" class="headerlink" title="1、 核心容器"></a>1、 核心容器</h3><ol>
+<li>spring-core, spring-beans<br> 这两个模块是Spring的基石，里面包括了IOC，BeanFactory等核心概念。</li>
+<li><p>spring-context<br> 构建与core和bean基础之上，主要是提供了供程序员使用的ApplicationContext。</p>
+</li>
+<li><p>spring-expression<br> 强大的表达式语言，供Spring对于各种文件中变量的访问和操控。</p>
+</li>
+</ol>
+<h3 id="2、AOP和instrument"><a href="#2、AOP和instrument" class="headerlink" title="2、AOP和instrument"></a>2、AOP和instrument</h3><ol>
+<li>spring-aop<br>提供了符合Alliance标准的面向切面编程的实现。允许定义方法拦截器和切入点，干净的解耦业务代码和切面代码。</li>
+<li>spring-aspects<br>提供与AspectJ的集成</li>
+<li>spring-instrument<br>模块提供了在某些应用程序服务器中使用的类检测支持和类加载器实现。 spring-instrument-tomcat 模块包含Spring的Tomcat检测代理。</li>
+</ol>
+<h3 id="3、Web"><a href="#3、Web" class="headerlink" title="3、Web"></a>3、Web</h3><ol>
+<li>spring-web<br>提供基本的面向Web的集成功能，例如多部分文件上载功能以及使用Servlet侦听器和面向Web的应用程序上下文初始化IoC容器。它还包含一个HTTP客户端以及Spring的远程支持的Web相关部分</li>
+<li>spring-webmvc<br>就是我们经常使用spingMVC</li>
+<li>spring-webmvc-portlet<br>portlet 环境下的springMVC，我没用过。</li>
+<li>spring-websocket<br>websocket 和spring的集成，使用起来很方便。</li>
+</ol>
+<h3 id="4、数据访问-集成"><a href="#4、数据访问-集成" class="headerlink" title="4、数据访问/集成"></a>4、数据访问/集成</h3><ol>
+<li>spring-jdbc<br>提供了一个 JDBC -abstraction层，无需进行繁琐的JDBC编码和解析数据库供应商特定的错误代码。</li>
+<li>spring-tx<br>spirng 的事务</li>
+<li>spring-orm，<br>将常规的ORM框架和spring集成，包括JPA JDO Hibernate</li>
+<li>spring-oxm<br>提供了一个支持 Object/XML mapping 实现的抽象层，例如JAXB，Castor，XMLBeans，JiBX和XStream。</li>
+<li>spring-jms<br>包含用于生成和使用消息的功能。从Spring Framework 4.1开始，它提供了与 spring-messaging 模块的集成。</li>
+</ol>
+<h3 id="5、测试"><a href="#5、测试" class="headerlink" title="5、测试"></a>5、测试</h3><p>spring-test 模块支持带有JUnit或TestNG的Spring组件的 unit testing 和 integration testing 。它提供了一致的 ApplicationContext 的Spring ApplicationContext 和 caching 这些上下文。它还提供 mock objects ，您可以使用它来单独测试代码。</p>
 
       
     </div>
@@ -448,11 +499,33 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/基础/" rel="tag"><i class="fa fa-tag"></i> 基础</a>
+          
+        </div>
+      
 
       
       
       
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/25/我来了/" rel="prev" title="我来了">
+                我来了 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
 
       
@@ -493,8 +566,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -509,7 +591,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -528,12 +610,33 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
               
 
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
               
             </nav>
           
@@ -579,6 +682,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、鸟瞰图"><span class="nav-text">一、鸟瞰图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、组件"><span class="nav-text">二、组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、-核心容器"><span class="nav-text">1、 核心容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、AOP和instrument"><span class="nav-text">2、AOP和instrument</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Web"><span class="nav-text">3、Web</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、数据访问-集成"><span class="nav-text">4、数据访问/集成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、测试"><span class="nav-text">5、测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -741,6 +861,66 @@
 
 
   
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+                'X-LC-Key': 'scOU3TGgNidrzFxQLIYGHIJg',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
 
   
 
