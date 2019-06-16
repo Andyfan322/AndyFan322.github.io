@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-05-19T06:14:06.813Z</updated>
+  <updated>2019-06-16T11:07:25.822Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,50 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>springBoot 打包 fat、thin jar</title>
+    <link href="http://yoursite.com/2019/06/16/springBoot-%E6%89%93%E5%8C%85-fat%E3%80%81thin-jar/"/>
+    <id>http://yoursite.com/2019/06/16/springBoot-打包-fat、thin-jar/</id>
+    <published>2019-06-16T10:42:35.000Z</published>
+    <updated>2019-06-16T11:07:25.822Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>注册中心相关组件讨论</title>
+    <link href="http://yoursite.com/2019/05/25/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%9B%B8%E5%85%B3%E7%BB%84%E4%BB%B6%E8%AE%A8%E8%AE%BA/"/>
+    <id>http://yoursite.com/2019/05/25/注册中心相关组件讨论/</id>
+    <published>2019-05-25T03:58:14.000Z</published>
+    <updated>2019-05-26T12:49:43.771Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Vim 使用</title>
