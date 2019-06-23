@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="xiaofang&#39;s blog">
 <meta property="og:description" content="今天在看web.xml为什么逐渐淡出我们的视野，重温了下JDK的SPI机制（Service Provider Interface）。 SPI 是什么？面向接口编程+配置文件！对，我总结的就是一句话。看看我们日常使用不同数据库驱动，不同日志框架，是不是都在使用SPI机制呢？下面我用数据库驱动来举例。 JDBC驱动使用SPI一、概述我们都知道数据库驱动 java.sql.Driver，针对不同数据库厂">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-23T13:46:50.912Z">
+<meta property="og:updated_time" content="2019-06-23T13:49:12.197Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 里面的SPI">
 <meta name="twitter:description" content="今天在看web.xml为什么逐渐淡出我们的视野，重温了下JDK的SPI机制（Service Provider Interface）。 SPI 是什么？面向接口编程+配置文件！对，我总结的就是一句话。看看我们日常使用不同数据库驱动，不同日志框架，是不是都在使用SPI机制呢？下面我用数据库驱动来举例。 JDBC驱动使用SPI一、概述我们都知道数据库驱动 java.sql.Driver，针对不同数据库厂">
@@ -370,7 +370,7 @@
                 
               
 
-              <time title="创建时间：2019-06-23 18:07:27 / 修改时间：21:46:50" itemprop="dateCreated datePublished" datetime="2019-06-23T18:07:27+08:00">2019-06-23</time>
+              <time title="创建时间：2019-06-23 18:07:27 / 修改时间：21:49:12" itemprop="dateCreated datePublished" datetime="2019-06-23T18:07:27+08:00">2019-06-23</time>
             
 
             
@@ -458,11 +458,14 @@
 <h3 id="二、加载驱动，获取连接"><a href="#二、加载驱动，获取连接" class="headerlink" title="二、加载驱动，获取连接"></a>二、加载驱动，获取连接</h3><blockquote>
 <p>注册Driver到DriverManager -&gt; DriverManager.getConnection(…) 获取连接</p>
 </blockquote>
-<h3 id="新（SPI机制）、老（反射）2种方式"><a href="#新（SPI机制）、老（反射）2种方式" class="headerlink" title="新（SPI机制）、老（反射）2种方式"></a>新（SPI机制）、老（反射）2种方式</h3><h5 id="1、老方式，通过Class-forName-“xxx-xxx-xxx”-反射"><a href="#1、老方式，通过Class-forName-“xxx-xxx-xxx”-反射" class="headerlink" title="1、老方式，通过Class.forName(“xxx.xxx.xxx”)反射"></a>1、老方式，通过Class.forName(“xxx.xxx.xxx”)反射</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反射，会调用Driver里static方法，注册Driver到DriverManager</span></span><br><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br><span class="line"><span class="comment">// 从DriverManager 里面获取连接</span></span><br><span class="line">Connection connection = DriverManager.getConnection(URL, username, pwd);</span><br></pre></td></tr></table></figure>
-<h5 id="2、新方式，SPI机制，省略Class-forName-“xxx-xxx-xxx”-方式（jar包下所需文件如概述描述）"><a href="#2、新方式，SPI机制，省略Class-forName-“xxx-xxx-xxx”-方式（jar包下所需文件如概述描述）" class="headerlink" title="2、新方式，SPI机制，省略Class.forName(“xxx.xxx.xxx”)方式（jar包下所需文件如概述描述）"></a>2、新方式，SPI机制，省略Class.forName(“xxx.xxx.xxx”)方式（jar包下所需文件如概述描述）</h5><blockquote>
+<h3 id="新（SPI机制）、老（反射）2种方式"><a href="#新（SPI机制）、老（反射）2种方式" class="headerlink" title="新（SPI机制）、老（反射）2种方式"></a>新（SPI机制）、老（反射）2种方式</h3><h5 id="1、新方式，SPI机制，省略Class-forName-“xxx-xxx-xxx”-方式（jar包下所需文件如概述描述）"><a href="#1、新方式，SPI机制，省略Class-forName-“xxx-xxx-xxx”-方式（jar包下所需文件如概述描述）" class="headerlink" title="1、新方式，SPI机制，省略Class.forName(“xxx.xxx.xxx”)方式（jar包下所需文件如概述描述）"></a>1、新方式，SPI机制，省略Class.forName(“xxx.xxx.xxx”)方式（jar包下所需文件如概述描述）</h5><blockquote>
 <p>驱动从 5.x 开始jar包下必须要有 META-INF/services/java.sql.Driver。</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 会调用DriverManager的static方法，里面会寻找驱动jar包下面META-INF/services/java.sql.Driver 文件</span></span><br><span class="line"><span class="comment">// 初始化Driver，当然也就调用了Driver的static方法</span></span><br><span class="line">Connection connection = DriverManager.getConnection(URL, username, pwd);</span><br></pre></td></tr></table></figure>
+<h5 id="2、老方式，通过Class-forName-“xxx-xxx-xxx”-反射"><a href="#2、老方式，通过Class-forName-“xxx-xxx-xxx”-反射" class="headerlink" title="2、老方式，通过Class.forName(“xxx.xxx.xxx”)反射"></a>2、老方式，通过Class.forName(“xxx.xxx.xxx”)反射</h5><blockquote>
+<p>驱动4.x一般这样来写</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反射，会调用Driver里static方法，注册Driver到DriverManager</span></span><br><span class="line">Class.forName(<span class="string">"com.mysql.jdbc.Driver"</span>);</span><br><span class="line"><span class="comment">// 从DriverManager 里面获取连接</span></span><br><span class="line">Connection connection = DriverManager.getConnection(URL, username, pwd);</span><br></pre></td></tr></table></figure>
 <h3 id="2种方式讲解"><a href="#2种方式讲解" class="headerlink" title="2种方式讲解"></a>2种方式讲解</h3><ul>
 <li>新的</li>
 </ul>
@@ -721,7 +724,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SPI-是什么？"><span class="nav-text">SPI 是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDBC驱动使用SPI"><span class="nav-text">JDBC驱动使用SPI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、概述"><span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、加载驱动，获取连接"><span class="nav-text">二、加载驱动，获取连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新（SPI机制）、老（反射）2种方式"><span class="nav-text">新（SPI机制）、老（反射）2种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、老方式，通过Class-forName-“xxx-xxx-xxx”-反射"><span class="nav-text">1、老方式，通过Class.forName(“xxx.xxx.xxx”)反射</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、新方式，SPI机制，省略Class-forName-“xxx-xxx-xxx”-方式（jar包下所需文件如概述描述）"><span class="nav-text">2、新方式，SPI机制，省略Class.forName(“xxx.xxx.xxx”)方式（jar包下所需文件如概述描述）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2种方式讲解"><span class="nav-text">2种方式讲解</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SPI-是什么？"><span class="nav-text">SPI 是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDBC驱动使用SPI"><span class="nav-text">JDBC驱动使用SPI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、概述"><span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、加载驱动，获取连接"><span class="nav-text">二、加载驱动，获取连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新（SPI机制）、老（反射）2种方式"><span class="nav-text">新（SPI机制）、老（反射）2种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、新方式，SPI机制，省略Class-forName-“xxx-xxx-xxx”-方式（jar包下所需文件如概述描述）"><span class="nav-text">1、新方式，SPI机制，省略Class.forName(“xxx.xxx.xxx”)方式（jar包下所需文件如概述描述）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、老方式，通过Class-forName-“xxx-xxx-xxx”-反射"><span class="nav-text">2、老方式，通过Class.forName(“xxx.xxx.xxx”)反射</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2种方式讲解"><span class="nav-text">2种方式讲解</span></a></li></ol></div>
             
 
           </div>
