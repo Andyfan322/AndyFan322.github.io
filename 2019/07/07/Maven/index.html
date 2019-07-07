@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="一、什么是fat、thin jarspringBoot项目可以运行java -jar xxx.jar 来启动，默认情况下它会把所有的依赖都打到一个jar里面，称作fat jar。但是一般情况下很多外部依赖的jar大多数不可变，若是每次的jar都是很大，势必在网络不好的情况下上传到服务器很慢。基于此，我们可以利用maven的2个插件也可以打出thin jar。  备注：java -jar xx.ja">
+  <meta name="description" content="一、maven 可用插件信息 Apache（官方，稳定） 详细列表：地址 下载列表：地址    二、maven3个内置生命周期 每个生命周期相互独立，且包含若干阶段。   clean default（build） site  三、3个生命周期包含的阶段 每个阶段相当于一个接口，具体的实现由插件来实现。  1、clean pre-clean执行一些清理前需要完成的工作。 clean清理上一次构建生成">
 <meta name="keywords" content="spring、分布式、架构、">
 <meta property="og:type" content="article">
-<meta property="og:title" content="springBoot 打包 fat、thin jar">
-<meta property="og:url" content="http://yoursite.com/2019/06/16/springBoot-打包-fat、thin-jar/index.html">
+<meta property="og:title" content="Maven 插件讲解">
+<meta property="og:url" content="http://yoursite.com/2019/07/07/Maven/index.html">
 <meta property="og:site_name" content="xiaofang&#39;s blog">
-<meta property="og:description" content="一、什么是fat、thin jarspringBoot项目可以运行java -jar xxx.jar 来启动，默认情况下它会把所有的依赖都打到一个jar里面，称作fat jar。但是一般情况下很多外部依赖的jar大多数不可变，若是每次的jar都是很大，势必在网络不好的情况下上传到服务器很慢。基于此，我们可以利用maven的2个插件也可以打出thin jar。  备注：java -jar xx.ja">
+<meta property="og:description" content="一、maven 可用插件信息 Apache（官方，稳定） 详细列表：地址 下载列表：地址    二、maven3个内置生命周期 每个生命周期相互独立，且包含若干阶段。   clean default（build） site  三、3个生命周期包含的阶段 每个阶段相当于一个接口，具体的实现由插件来实现。  1、clean pre-clean执行一些清理前需要完成的工作。 clean清理上一次构建生成">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-16T11:17:35.129Z">
+<meta property="og:updated_time" content="2019-07-07T11:18:05.386Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="springBoot 打包 fat、thin jar">
-<meta name="twitter:description" content="一、什么是fat、thin jarspringBoot项目可以运行java -jar xxx.jar 来启动，默认情况下它会把所有的依赖都打到一个jar里面，称作fat jar。但是一般情况下很多外部依赖的jar大多数不可变，若是每次的jar都是很大，势必在网络不好的情况下上传到服务器很慢。基于此，我们可以利用maven的2个插件也可以打出thin jar。  备注：java -jar xx.ja">
+<meta name="twitter:title" content="Maven 插件讲解">
+<meta name="twitter:description" content="一、maven 可用插件信息 Apache（官方，稳定） 详细列表：地址 下载列表：地址    二、maven3个内置生命周期 每个生命周期相互独立，且包含若干阶段。   clean default（build） site  三、3个生命周期包含的阶段 每个阶段相当于一个接口，具体的实现由插件来实现。  1、clean pre-clean执行一些清理前需要完成的工作。 clean清理上一次构建生成">
 
 
 
@@ -117,7 +117,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/06/16/springBoot-打包-fat、thin-jar/">
+  <link rel="canonical" href="http://yoursite.com/2019/07/07/Maven/">
 
 
 
@@ -127,7 +127,7 @@
   };
 </script>
 
-  <title>springBoot 打包 fat、thin jar | xiaofang's blog</title>
+  <title>Maven 插件讲解 | xiaofang's blog</title>
   
 
 
@@ -327,7 +327,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/16/springBoot-打包-fat、thin-jar/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/07/Maven/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="安迪·梵">
@@ -344,7 +344,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">springBoot 打包 fat、thin jar
+          <h1 class="post-title" itemprop="name headline">Maven 插件讲解
 
               
             
@@ -370,7 +370,7 @@
                 
               
 
-              <time title="创建时间：2019-06-16 18:42:35 / 修改时间：19:17:35" itemprop="dateCreated datePublished" datetime="2019-06-16T18:42:35+08:00">2019-06-16</time>
+              <time title="创建时间：2019-07-07 13:55:48 / 修改时间：19:18:05" itemprop="dateCreated datePublished" datetime="2019-07-07T13:55:48+08:00">2019-07-07</time>
             
 
             
@@ -380,6 +380,24 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/工具/" itemprop="url" rel="index"><span itemprop="name">工具</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -393,8 +411,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/06/16/springBoot-打包-fat、thin-jar/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/16/springBoot-打包-fat、thin-jar/" itemprop="commentCount"></span>
+                <a href="/2019/07/07/Maven/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/07/07/Maven/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -402,7 +420,7 @@
 
           
           
-            <span id="/2019/06/16/springBoot-打包-fat、thin-jar/" class="leancloud_visitors" data-flag-title="springBoot 打包 fat、thin jar">
+            <span id="/2019/07/07/Maven/" class="leancloud_visitors" data-flag-title="Maven 插件讲解">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -432,28 +450,139 @@
       
 
       
-        <h1 id="一、什么是fat、thin-jar"><a href="#一、什么是fat、thin-jar" class="headerlink" title="一、什么是fat、thin jar"></a>一、什么是fat、thin jar</h1><p>springBoot项目可以运行java -jar xxx.jar 来启动，默认情况下它会把所有的依赖都打到一个jar里面，称作fat jar。但是一般情况下很多外部依赖的jar大多数不可变，若是每次的jar都是很大，势必在网络不好的情况下上传到服务器很慢。基于此，我们可以利用maven的2个插件也可以打出thin jar。</p>
-<blockquote>
-<p>备注：java -jar xx.jar 是java自带的命令，和sprignBoot没半毛钱关系，因此我们只需要按照这个jar文件的规范，也可以将任何项目打包成可执行的jar。</p>
-</blockquote>
-<h1 id="二、MANIFEST-MF-文件"><a href="#二、MANIFEST-MF-文件" class="headerlink" title="二、MANIFEST.MF 文件"></a>二、MANIFEST.MF 文件</h1><blockquote>
-<p>每一个jar包下面都谁有它，可见其重要性，它列出了jar包一些信息/清单。</p>
+        <h1 id="一、maven-可用插件信息"><a href="#一、maven-可用插件信息" class="headerlink" title="一、maven 可用插件信息"></a>一、maven 可用插件信息</h1><ul>
+<li>Apache（官方，稳定）<ul>
+<li>详细列表：<a href="http://maven.apache.org/plugins/index.html" target="_blank" rel="noopener">地址</a></li>
+<li>下载列表：<a href="http://repo1.maven.org/maven2/org/apache/maven/plugins/" target="_blank" rel="noopener">地址</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="二、maven3个内置生命周期"><a href="#二、maven3个内置生命周期" class="headerlink" title="二、maven3个内置生命周期"></a>二、maven3个内置生命周期</h1><blockquote>
+<p>每个生命周期相互独立，且包含若干阶段。</p>
 </blockquote>
 <ul>
-<li>正常的springBoot可执行jar</li>
+<li>clean</li>
+<li>default（build）</li>
+<li>site</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Implementation-Title: af-app</span><br><span class="line">Implementation-Version: 0.0.1-SNAPSHOT</span><br><span class="line">// springBoot启动类</span><br><span class="line">Start-Class: com.af.app.afapp.AfAppApplication</span><br><span class="line">//类文件</span><br><span class="line">Spring-Boot-Classes: BOOT-INF/classes/ </span><br><span class="line">//依赖路径</span><br><span class="line">Spring-Boot-Lib: BOOT-INF/lib/  </span><br><span class="line">Build-Jdk-Spec: 1.8</span><br><span class="line">Spring-Boot-Version: 2.1.5.RELEASE</span><br><span class="line">Created-By: Maven Archiver 3.4.0</span><br><span class="line">//通过它来启动 Start-Class</span><br><span class="line">Main-Class: org.springframework.boot.loader.JarLauncher</span><br></pre></td></tr></table></figure>
-<ul>
-<li>mvn-jar-plugin 插件打出来的可执行jar</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Archiver-Version: Plexus Archiver</span><br><span class="line">Built-By: yons</span><br><span class="line">// 类path，依赖的所有jar</span><br><span class="line">Class-Path: ../lib/data-asset-tag-api-1.0.0.jar ...</span><br><span class="line">Created-By: Apache Maven 3.6.0</span><br><span class="line">Build-Jdk: 1.8.0_201</span><br><span class="line">// 启动类</span><br><span class="line">Main-Class: com.dtwave.asset.tag.provider.DataAssetTagStarter</span><br></pre></td></tr></table></figure>
-<h1 id="三、springBoot-可执行jar的maven插件"><a href="#三、springBoot-可执行jar的maven插件" class="headerlink" title="三、springBoot 可执行jar的maven插件"></a>三、springBoot 可执行jar的maven插件</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!-- 可选--&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这里我们直接给出springboot提供好的插件，就可以打出可执行的jar。注意若我们的工程没有继承spring-boot-starter-parent（这里面有了repackage 这个阶段），则还需要在上述的插件里面加个repackage，它就是将jar包可执化的关键。</p>
-<h1 id="四、maven-jar-plugin-maven-dependency-plugin-插件"><a href="#四、maven-jar-plugin-maven-dependency-plugin-插件" class="headerlink" title="四、maven-jar-plugin+maven-dependency-plugin 插件"></a>四、maven-jar-plugin+maven-dependency-plugin 插件</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-jar-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!--设置manifest.mf文件--&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!-- 添加依赖jar路径 Class-Path --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">addClasspath</span>&gt;</span>true<span class="tag">&lt;/<span class="name">addClasspath</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!-- 设置入口程序 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>com.af.app.afapp.AfAppApplication<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">classpathPrefix</span>&gt;</span>../libs<span class="tag">&lt;/<span class="name">classpathPrefix</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!--拷贝项目依赖--&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-dependency-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--自动在target目录下新建libs目录放依赖--&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/libs<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">overWriteReleases</span>&gt;</span>false<span class="tag">&lt;/<span class="name">overWriteReleases</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">overWriteSnapshots</span>&gt;</span>false<span class="tag">&lt;/<span class="name">overWriteSnapshots</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">overWriteIfNewer</span>&gt;</span>true<span class="tag">&lt;/<span class="name">overWriteIfNewer</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>maven-jar-plugin 插件可以指定主程序入口，和可搜索的类路径。<br>dependency-plugin 主要用于依赖的copy，瘦身jar。</p>
-<blockquote>
-<p>有兴趣的朋友可以研究下springBoot 启动的原理，它是怎么使用org.springframework.boot.loader.JarLauncher 来找到我们的启动类，完成程序的启动的。</p>
+<h1 id="三、3个生命周期包含的阶段"><a href="#三、3个生命周期包含的阶段" class="headerlink" title="三、3个生命周期包含的阶段"></a>三、3个生命周期包含的阶段</h1><blockquote>
+<p>每个阶段相当于一个接口，具体的实现由插件来实现。</p>
 </blockquote>
+<h2 id="1、clean"><a href="#1、clean" class="headerlink" title="1、clean"></a>1、clean</h2><ul>
+<li>pre-clean执行一些清理前需要完成的工作。</li>
+<li>clean清理上一次构建生成的文件。</li>
+<li>post-clean执行一些清理后需要完成的工作。</li>
+</ul>
+<h2 id="2、-default"><a href="#2、-default" class="headerlink" title="2、 default"></a>2、 default</h2><blockquote>
+<p>default 生命周期定义了真正构建时所需要执行的所有步骤，它是所有生命周期中最核心的部分。</p>
+</blockquote>
+<ul>
+<li>validate</li>
+<li>initialize</li>
+<li>generate-sources</li>
+<li>process-sources 处理项目主资源文件。一般来说，是对src/main/resources目录的内容进行变量替换等工作后，复制到项目输出的主classpath目录中。</li>
+<li>generate-resources</li>
+<li>process-resources</li>
+<li><font color="#00ffff" size="4">compile</font>  编译项目的主源码。一般来说，是编译src/main/java目录下的Java文件至项目输出的主classpath目录中。</li>
+<li>process-classes</li>
+<li>generate-test-sources</li>
+<li>process-test-sources处理项目测试资源文件。一般来说，是对src/test/resources目录的内容进行变量替换等工作后，复制到项目输出的测试classpath目录中。</li>
+<li>generate-test-resources</li>
+<li>process-test-resources</li>
+<li>test-compile编译项目的测试代码。一般来说，是编译src/test/java目录下的Java文件至项目输出的测试classpath目录中。</li>
+<li>process-test-classes</li>
+<li>test 使用单元测试框架运行测试，测试代码不会被打包或部署。</li>
+<li>prepare-package</li>
+<li>package接受编译好的代码，打包成可发布的格式，如JAR。</li>
+<li>pre-integration-test</li>
+<li>integration-test</li>
+<li>post-integration-test</li>
+<li>verify</li>
+<li><font color="#00ffff" size="4">install</font> 将包安装到Maven本地仓库，供本地其他Maven项目使用。</li>
+<li><font color="#00ffff" size="4">deploy</font> 将最终的包复制到远程仓库，供其他开发人员和Maven项目使用。</li>
+</ul>
+<h2 id="site"><a href="#site" class="headerlink" title="site"></a>site</h2><blockquote>
+<p>site生命周期目的是建立和发布站点，maven能够基于pom配置自动生成一个简单站点，主要包括以下阶段：</p>
+</blockquote>
+<ul>
+<li>pre-size 执行在站点生成之前的准备工作；</li>
+<li>site 生成项目站点文档；</li>
+<li>post-site 执行一些在生成项目站点之后需要完成的工作；</li>
+<li>site-deploy 将生成的项目站点发布到服务器上</li>
+</ul>
+<p><strong>总结：生命周期：阶段=1：n，阶段：插件=1：1，插件：插件目标=1：n，阶段：插件目标=1：n ，也就是多生命周期，阶段都是抽象，具体的体现在插件的目标</strong></p>
+<h1 id="四、maven-插件与绑定阶段"><a href="#四、maven-插件与绑定阶段" class="headerlink" title="四、maven 插件与绑定阶段"></a>四、maven 插件与绑定阶段</h1><blockquote>
+<p>maven 为了更好的体验，默认内置几个插件，让用户在无感情况下完成项目的构建。</p>
+</blockquote>
+<h2 id="1、maven内置插件与绑定阶段"><a href="#1、maven内置插件与绑定阶段" class="headerlink" title="1、maven内置插件与绑定阶段"></a>1、maven内置插件与绑定阶段</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">插件</th>
+<th style="text-align:center">功能</th>
+<th style="text-align:center">绑定阶段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">maven-clean-plugin</td>
+<td style="text-align:center">清理上一次执行创建的目标文件</td>
+<td style="text-align:center">clean</td>
+</tr>
+<tr>
+<td style="text-align:center">maven-resources-plugin</td>
+<td style="text-align:center">处理源资源文件和测试资源文件</td>
+<td style="text-align:center">resources,testResources</td>
+</tr>
+<tr>
+<td style="text-align:center">maven-compiler-plugin</td>
+<td style="text-align:center">编译源文件和测试源文件</td>
+<td style="text-align:center">compile,testCompile</td>
+</tr>
+<tr>
+<td style="text-align:center">maven-surefire-plugin</td>
+<td style="text-align:center">执行测试文件</td>
+<td style="text-align:center">test</td>
+</tr>
+<tr>
+<td style="text-align:center">maven-jar-plugin</td>
+<td style="text-align:center">创建jar</td>
+<td style="text-align:center">jar</td>
+</tr>
+<tr>
+<td style="text-align:center">maven-install-plugin</td>
+<td style="text-align:center">安装 jar，默认将创建生成的 jar 拷贝到 .m2/repository 下面</td>
+<td style="text-align:center">install</td>
+</tr>
+<tr>
+<td style="text-align:center">maven-deploy-plugin</td>
+<td style="text-align:center">发布jar 到maven仓库，例如公司的私服</td>
+<td style="text-align:center">deploy</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2、maven插件目标调用方式"><a href="#2、maven插件目标调用方式" class="headerlink" title="2、maven插件目标调用方式"></a>2、maven插件目标调用方式</h2><blockquote>
+<p>插件是实现，目标是插件的具体体现，所以目标是我们关心的核心点。</p>
+</blockquote>
+<ul>
+<li>默认绑定<br>maven 默认将生命周期的若干阶段绑定了某些插件的目标，注意某些。即，阶段：目标=1：n，这里的n是可以包含0或大于1。<br>例如：mvn clean (默认将clean这个生命周期的clean阶段绑定到了maven-clean-plugin插件的clean目标)，这里需要说明下<br>maven-clean-plugin 只有一个目标，其他插件可能拥有n个目标，具体需要到<a href="https://maven.apache.org/plugins/index.html" target="_blank" rel="noopener">maven官网 </a>上查看。相同的，mvn package，mvn install 也是一样。</li>
+<li>指定调用<br>我们知道maven官方的插件，一般是这样的模式，artifactId 为 maven-archetype-plugin ，我们可以使用 mvn archetype:goal-name 命令的形式来调用具体的插件目标。</li>
+</ul>
+<p>说明：mvn xx:goal-name 中的xx以为是archetype按道理是不太准确，它应该是插件的唯一描述groupId:artifactId（前缀），但是在maven的官方上一般以archetype为插件的前缀。 我们也可以在引用插件的地方，用configuration 配置它的前缀:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">project</span>&gt;</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">      ...</span><br><span class="line">      <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compile-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">          ...</span><br><span class="line">          <span class="tag">&lt;<span class="name">goalPrefix</span>&gt;</span>customPrefix<span class="tag">&lt;/<span class="name">goalPrefix</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这样我们可以使用 mvn customPrefix:goal 来调用compile插件的某个目标了。</p>
+<h1 id="五、推荐几个有用小插件"><a href="#五、推荐几个有用小插件" class="headerlink" title="五、推荐几个有用小插件"></a>五、推荐几个有用小插件</h1><h2 id="1、maven–dependency-plugin"><a href="#1、maven–dependency-plugin" class="headerlink" title="1、maven–dependency-plugin"></a>1、maven–dependency-plugin</h2><p>这个插件有很多的目标，详情可见<a href="http://maven.apache.org/plugins/maven-dependency-plugin/" target="_blank" rel="noopener">官方定义</a>，我常用的：</p>
+<ul>
+<li>dependency:analyze 分析这个项目的依赖关系，并确定哪些是声明了且使用了，声明没使用等（不是很准确，特别在配置文件里面使用了依赖时候）作为大致分析。</li>
+<li>dependency:copy 将依赖和source 分离，例如：springBoot 中Fatjar问题解决.</li>
+<li>dependency :tree 显示该项目的依赖关系树。</li>
+</ul>
+<h2 id="2、maven-assembly-plugin"><a href="#2、maven-assembly-plugin" class="headerlink" title="2、maven-assembly-plugin"></a>2、maven-assembly-plugin</h2><p>这个插件在项目制作分发包时候使用，需要定义assembly.xml的元数据文件来表述打包。你可以这么理解，当需要一个压缩文件，包含项目的jar包，源代码，执行脚本等其他，就可以用它来指定这个文件，支持zip，tar.gz jar war 等格式。</p>
+<h2 id="3、maven-help-plugin"><a href="#3、maven-help-plugin" class="headerlink" title="3、maven-help-plugin"></a>3、maven-help-plugin</h2><p> 它是个maven提供的一个很有用的工具，可以帮助我们分析了解当前生效的profiles,pom，settings 文件和查询某个插件信息。例如</p>
+<ul>
+<li>当前生效pom<br>mvn help:effective-pom</li>
+<li>当前生效的settings<br>mvn help:effective-settings </li>
+<li>查询插件详情（用法和包含几个目标）<br>mvn help:describe -Dplugin=插件的前缀  -Ddetail</li>
+</ul>
 
       
     </div>
@@ -484,8 +613,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/25/注册中心相关组件讨论/" rel="next" title="注册中心相关组件讨论">
-                <i class="fa fa-chevron-left"></i> 注册中心相关组件讨论
+              <a href="/2019/06/23/Java-里面的SPI/" rel="next" title="Java 里面的SPI">
+                <i class="fa fa-chevron-left"></i> Java 里面的SPI
               </a>
             
           </div>
@@ -493,10 +622,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/06/22/StopWatch/" rel="prev" title="StopWatch">
-                StopWatch <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -705,7 +830,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、什么是fat、thin-jar"><span class="nav-text">一、什么是fat、thin jar</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、MANIFEST-MF-文件"><span class="nav-text">二、MANIFEST.MF 文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、springBoot-可执行jar的maven插件"><span class="nav-text">三、springBoot 可执行jar的maven插件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、maven-jar-plugin-maven-dependency-plugin-插件"><span class="nav-text">四、maven-jar-plugin+maven-dependency-plugin 插件</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、maven-可用插件信息"><span class="nav-text">一、maven 可用插件信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、maven3个内置生命周期"><span class="nav-text">二、maven3个内置生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、3个生命周期包含的阶段"><span class="nav-text">三、3个生命周期包含的阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、clean"><span class="nav-text">1、clean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、-default"><span class="nav-text">2、 default</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#site"><span class="nav-text">site</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、maven-插件与绑定阶段"><span class="nav-text">四、maven 插件与绑定阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、maven内置插件与绑定阶段"><span class="nav-text">1、maven内置插件与绑定阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、maven插件目标调用方式"><span class="nav-text">2、maven插件目标调用方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、推荐几个有用小插件"><span class="nav-text">五、推荐几个有用小插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、maven–dependency-plugin"><span class="nav-text">1、maven–dependency-plugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、maven-assembly-plugin"><span class="nav-text">2、maven-assembly-plugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、maven-help-plugin"><span class="nav-text">3、maven-help-plugin</span></a></li></ol></li></ol></div>
             
 
           </div>

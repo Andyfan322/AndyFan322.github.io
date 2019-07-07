@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-06-23T13:49:12.197Z</updated>
+  <updated>2019-07-07T11:18:05.386Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Maven 插件讲解</title>
+    <link href="http://yoursite.com/2019/07/07/Maven/"/>
+    <id>http://yoursite.com/2019/07/07/Maven/</id>
+    <published>2019-07-07T05:55:48.000Z</published>
+    <updated>2019-07-07T11:18:05.386Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="工具" scheme="http://yoursite.com/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Java 里面的SPI</title>
