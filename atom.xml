@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-07-07T11:18:05.386Z</updated>
+  <updated>2020-02-05T08:31:11.019Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,164 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Kerberos</title>
+    <link href="http://yoursite.com/2020/02/05/Kerberos/"/>
+    <id>http://yoursite.com/2020/02/05/Kerberos/</id>
+    <published>2020-02-05T08:30:53.000Z</published>
+    <updated>2020-02-05T08:31:11.019Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Alluxio</title>
+    <link href="http://yoursite.com/2020/02/05/Alluxio/"/>
+    <id>http://yoursite.com/2020/02/05/Alluxio/</id>
+    <published>2020-02-05T08:30:17.000Z</published>
+    <updated>2020-02-05T08:40:38.664Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Redis常见应用</title>
+    <link href="http://yoursite.com/2020/02/05/Redis%E5%B8%B8%E8%A7%81%E5%BA%94%E7%94%A8/"/>
+    <id>http://yoursite.com/2020/02/05/Redis常见应用/</id>
+    <published>2020-02-05T08:29:34.000Z</published>
+    <updated>2020-02-05T08:40:42.969Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Alluxio+Presto 查询</title>
+    <link href="http://yoursite.com/2020/02/05/Alluxio+Presto%20%E6%9F%A5%E8%AF%A2/"/>
+    <id>http://yoursite.com/2020/02/05/Alluxio+Presto 查询/</id>
+    <published>2020-02-05T08:28:01.000Z</published>
+    <updated>2020-02-05T08:28:42.326Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+      <category term="大数据" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>presto</title>
+    <link href="http://yoursite.com/2020/02/05/presto/"/>
+    <id>http://yoursite.com/2020/02/05/presto/</id>
+    <published>2020-02-05T05:36:08.000Z</published>
+    <updated>2020-02-05T08:43:46.056Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="查询引擎" scheme="http://yoursite.com/categories/%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>日常用的一些命令，包括linux，git</title>
+    <link href="http://yoursite.com/2019/12/05/%E6%97%A5%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%91%BD%E4%BB%A4%EF%BC%8C%E5%8C%85%E6%8B%AClinux%EF%BC%8Cgit/"/>
+    <id>http://yoursite.com/2019/12/05/日常用的一些命令，包括linux，git/</id>
+    <published>2019-12-05T08:34:29.000Z</published>
+    <updated>2020-02-05T08:46:40.353Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>多线程</title>
+    <link href="http://yoursite.com/2019/10/05/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    <id>http://yoursite.com/2019/10/05/多线程/</id>
+    <published>2019-10-05T08:33:08.000Z</published>
+    <updated>2020-02-05T08:40:30.035Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Maven 插件讲解</title>
@@ -94,6 +252,28 @@
     <id>http://yoursite.com/2019/06/16/springBoot-打包-fat、thin-jar/</id>
     <published>2019-06-16T10:42:35.000Z</published>
     <updated>2019-06-16T11:17:35.129Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>事务</title>
+    <link href="http://yoursite.com/2019/06/05/%E4%BA%8B%E5%8A%A1/"/>
+    <id>http://yoursite.com/2019/06/05/事务/</id>
+    <published>2019-06-05T08:35:06.000Z</published>
+    <updated>2020-02-05T08:47:10.241Z</updated>
     
     <summary type="html">
     
@@ -209,32 +389,6 @@
   </entry>
   
   <entry>
-    <title>新的博客</title>
-    <link href="http://yoursite.com/2019/04/25/%E6%88%91%E6%9D%A5%E4%BA%86/"/>
-    <id>http://yoursite.com/2019/04/25/我来了/</id>
-    <published>2019-04-25T02:08:56.000Z</published>
-    <updated>2019-04-25T07:49:45.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-      <category term="心情" scheme="http://yoursite.com/categories/%E5%BF%83%E6%83%85/"/>
-    
-    
-      <category term="感情" scheme="http://yoursite.com/tags/%E6%84%9F%E6%83%85/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Spring 概述</title>
     <link href="http://yoursite.com/2019/04/24/Spring-IOC/"/>
     <id>http://yoursite.com/2019/04/24/Spring-IOC/</id>
@@ -257,6 +411,54 @@
     
     
       <category term="基础" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>新的博客</title>
+    <link href="http://yoursite.com/2019/04/23/%E6%96%B0%E5%8D%9A%E5%AE%A2/"/>
+    <id>http://yoursite.com/2019/04/23/新博客/</id>
+    <published>2019-04-23T02:08:56.000Z</published>
+    <updated>2020-02-05T08:45:24.005Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="心情" scheme="http://yoursite.com/categories/%E5%BF%83%E6%83%85/"/>
+    
+    
+      <category term="感情" scheme="http://yoursite.com/tags/%E6%84%9F%E6%83%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JVM</title>
+    <link href="http://yoursite.com/2019/03/05/JVM/"/>
+    <id>http://yoursite.com/2019/03/05/JVM/</id>
+    <published>2019-03-05T08:36:49.000Z</published>
+    <updated>2020-02-05T08:48:12.034Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
     
   </entry>
   

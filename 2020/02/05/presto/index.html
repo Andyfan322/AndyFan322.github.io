@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Presto1、简介Hadoop提供了大数据存储和计算一套解决方案，完美地解决了大数据的存储和计算问题。但是Hadoop提供的Map-Reduce计算框架，适用于大数据量的离线和批量计算，它关注的吞吐量不是计算效率，在大数据量快速实时Ad-Hoc查询计算上表现很不友好。继Hive后，facebook公司在2012年开始开发Presto，与2013年正式开源，给Ad-Hoc查询带来了一股清凉的春风。">
+<meta name="keywords" content="spring、分布式、架构、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="presto">
+<meta property="og:url" content="http://yoursite.com/2020/02/05/presto/index.html">
+<meta property="og:site_name" content="xiaofang&#39;s blog">
+<meta property="og:description" content="Presto1、简介Hadoop提供了大数据存储和计算一套解决方案，完美地解决了大数据的存储和计算问题。但是Hadoop提供的Map-Reduce计算框架，适用于大数据量的离线和批量计算，它关注的吞吐量不是计算效率，在大数据量快速实时Ad-Hoc查询计算上表现很不友好。继Hive后，facebook公司在2012年开始开发Presto，与2013年正式开源，给Ad-Hoc查询带来了一股清凉的春风。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjBhMGZkZTRiMDcwMDNmZTA0NWI2Mi5wbmc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjA5OTRiZTRiMDA4NTk2NzZmMTA1OS5wbmc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjBhOGJjZTRiMDNjOGU0OTNkODM4YS5wbmc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjFiNTA0ZTRiMDhkZDU2NTk0OGFjMS5wbmc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191213100550170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nZmFuMzIy,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2020-02-05T08:43:46.056Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="presto">
+<meta name="twitter:description" content="Presto1、简介Hadoop提供了大数据存储和计算一套解决方案，完美地解决了大数据的存储和计算问题。但是Hadoop提供的Map-Reduce计算框架，适用于大数据量的离线和批量计算，它关注的吞吐量不是计算效率，在大数据量快速实时Ad-Hoc查询计算上表现很不友好。继Hive后，facebook公司在2012年开始开发Presto，与2013年正式开源，给Ad-Hoc查询带来了一股清凉的春风。">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjBhMGZkZTRiMDcwMDNmZTA0NWI2Mi5wbmc?x-oss-process=image/format,png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xiaofang's blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/02/05/presto/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>presto | xiaofang's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/Andyfan322" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaofang's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/05/presto/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安迪·梵">
+      <meta itemprop="description" content="keep it simple and stupid">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaofang's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">presto
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-05 13:36:08 / 修改时间：16:43:46" itemprop="dateCreated datePublished" datetime="2020-02-05T13:36:08+08:00">2020-02-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/查询引擎/" itemprop="url" rel="index"><span itemprop="name">查询引擎</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2020/02/05/presto/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/02/05/presto/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2020/02/05/presto/" class="leancloud_visitors" data-flag-title="presto">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Presto"><a href="#Presto" class="headerlink" title="Presto"></a>Presto</h1><h2 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h2><p>Hadoop提供了大数据存储和计算一套解决方案，完美地解决了大数据的存储和计算问题。但是Hadoop提供的Map-Reduce计算框架，适用于大数据量的离线和批量计算，它关注的吞吐量不是计算效率，在大数据量快速实时Ad-Hoc查询计算上表现很不友好。继Hive后，facebook公司在2012年开始开发Presto，与2013年正式开源，给Ad-Hoc查询带来了一股清凉的春风。Presto基于Java语言开发，在多数据源支持上，易用性，可扩展性上搜事大数据实时查询计算产品中的佼佼者。</p>
+<h2 id="2、特性"><a href="#2、特性" class="headerlink" title="2、特性"></a>2、特性</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">特点</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">多数据源</td>
+<td style="text-align:center">目前Presto支持Mysql、PostgreSQL、Cassandra、Hive、Kafa等</td>
+</tr>
+<tr>
+<td style="text-align:center">SQL</td>
+<td style="text-align:center">完全兼容ANSI SQL，并提供sql shell 给用户</td>
+</tr>
+<tr>
+<td style="text-align:center">扩展性</td>
+<td style="text-align:center">基于SPI机制，易开发特定数据源连接器Connector</td>
+</tr>
+<tr>
+<td style="text-align:center">混合计算</td>
+<td style="text-align:center">多数据的混合计算</td>
+</tr>
+<tr>
+<td style="text-align:center">高性能</td>
+<td style="text-align:center">Presto官方测试是Hive性能的10倍以上</td>
+</tr>
+<tr>
+<td style="text-align:center">PipeLine</td>
+<td style="text-align:center">终端用户不用等待结果集处理完才看到结果，从一开始计算就可以产出一部分结果给终端</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3、基本概念"><a href="#3、基本概念" class="headerlink" title="3、基本概念"></a>3、基本概念</h2><h3 id="3-1-服务进程"><a href="#3-1-服务进程" class="headerlink" title="3.1 服务进程"></a>3.1 服务进程</h3><ul>
+<li>Coordinator</li>
+</ul>
+<p>一般Coordinator部署在集群中一个单独节点，是整个Presto集群的管理节点。它主要用户接受客户端提交的查询，解析查询并生成查询计划，对任务进行调度，对worker管理。</p>
+<ul>
+<li>Worker</li>
+</ul>
+<p>工作节点，一般多个，主要进行数据的处理和Task的执行，它会周期性的向Coordinator进行Restful “沟通”，即心跳。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjBhMGZkZTRiMDcwMDNmZTA0NWI2Mi5wbmc?x-oss-process=image/format,png" alt></p>
+<h3 id="3-2-Presto模型"><a href="#3-2-Presto模型" class="headerlink" title="3.2 Presto模型"></a>3.2 Presto模型</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Connector</td>
+<td style="text-align:center">Presto是通过Connector来访问不同的数据源的，可以将Connector当作访问不同数据源的驱动程序，每种Connector都实现了Presto里面的SPI接口。当需要使用某种Connnector时候需要在${PRESTO_HOME}/etc/catalog中配置。</td>
+</tr>
+<tr>
+<td style="text-align:center">Catalog</td>
+<td style="text-align:center">类似我们常规关系数据库Mysql里面实列。</td>
+</tr>
+<tr>
+<td style="text-align:center">Schema</td>
+<td style="text-align:center">类似我们常规关系数据库Mysql里面的database。</td>
+</tr>
+<tr>
+<td style="text-align:center">Table</td>
+<td style="text-align:center">类似我们常规关系数据库Mysql里面的table。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-3-Presto查询模型"><a href="#3-3-Presto查询模型" class="headerlink" title="3.3 Presto查询模型"></a>3.3 Presto查询模型</h3><h4 id="3-3-1-模型术语"><a href="#3-3-1-模型术语" class="headerlink" title="3.3.1 模型术语"></a>3.3.1 模型术语</h4><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjA5OTRiZTRiMDA4NTk2NzZmMTA1OS5wbmc?x-oss-process=image/format,png" alt></p>
+<ul>
+<li>Statement</li>
+</ul>
+<p>客户端输入的SQL。</p>
+<ul>
+<li>Query</li>
+</ul>
+<p>客户端输入的SQL在Presto内部的表述（实例）。由Stage、Task、Driver、Split、Operator、DataSource组成。</p>
+<ul>
+<li>Stage</li>
+</ul>
+<p>Query的组成部分，多个有层级关系的Stage组合成Query。</p>
+<ul>
+<li>Exchage</li>
+</ul>
+<p>Stage之间是通过Exchage来相互连接，完成数据交换。</p>
+<ul>
+<li>Task</li>
+</ul>
+<p>正真运行在Worker上的，是Stage的逻辑上的拆分。</p>
+<ul>
+<li>Driver</li>
+</ul>
+<p>组成Task的单位，操作的集合。一个Driver处理一个Split，并生成输入输出。</p>
+<ul>
+<li>Operator</li>
+</ul>
+<p>具体作用在Split上的操作，如：过滤、加权、转换等。</p>
+<ul>
+<li>Split</li>
+</ul>
+<p>分片，大的数据集中一个小的数据集。</p>
+<h4 id="3-3-1-查询过程"><a href="#3-3-1-查询过程" class="headerlink" title="3.3.1 查询过程"></a>3.3.1 查询过程</h4><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjBhOGJjZTRiMDNjOGU0OTNkODM4YS5wbmc?x-oss-process=image/format,png" alt></p>
+<p>整个过程大致分为7步</p>
+<ul>
+<li>客户端通过Http请求发送查询语句给Coordinator。</li>
+<li>Coordinator解析查询语句，生成查询计划。根据查询计划依次会生成：SqlQueryExecution、SqlStageExecution、HttpRemoteTask。</li>
+<li>分发任务到各个Worker，全程是通过HttpRemoteTask里面的HttpClient将创建或者更新Task的请求发送到数据所在的节点。节点上的TaskResource接收到请求后在worker上启动/更新SqlTaskExecution对象，然后处理Split。</li>
+<li>上游（距离数据源近的）Stage里面的Task，通过各种Connector从数据源里面读取数据。</li>
+<li>下游Stage里面的Task读取上游Stage里输出的结果，拿到数据后在内存里面做计算和处理。</li>
+<li>Coordinator从分发Task后就可以从最顶层的Stage（Single Stage）里面获取Task计算结果，缓存到buffer，直到所有计算结束。</li>
+<li>Client从提交语句之后，会不停从Coordinator中获取本次查询的结果，不是等到查询结果都产生完毕才获取显示。</li>
+</ul>
+<h2 id="4、查询流程解析"><a href="#4、查询流程解析" class="headerlink" title="4、查询流程解析"></a>4、查询流程解析</h2><blockquote>
+<p>presto 构建Restful服务使用的airlift框框。</p>
+</blockquote>
+<h3 id="4-1-客户端发起请求"><a href="#4-1-客户端发起请求" class="headerlink" title="4.1 客户端发起请求"></a>4.1 客户端发起请求</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public final class Presto &#123;</span><br><span class="line">	private Presto() &#123;</span><br><span class="line">	&#125;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Console console = singleCommand(Console.class).parse(args);</span><br><span class="line">		if (console.helpOption.showHelpIfRequested() ||</span><br><span class="line">				console.versionOption.showVersionIfRequested()) &#123;</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">		System.exit(console.run() ? 0 : 1);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-执行客户端命令"><a href="#4-2-执行客户端命令" class="headerlink" title="4.2 执行客户端命令"></a>4.2 执行客户端命令</h3><p>类：Console</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">	public boolean run() &#123;</span><br><span class="line">		...</span><br><span class="line">		if (hasQuery) &#123;</span><br><span class="line">			return executeCommand(queryRunner, query, clientOptions.outputFormat, clientOptions.ignoreErrors);</span><br><span class="line">		&#125;</span><br><span class="line">         	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-发送Http请求"><a href="#4-3-发送Http请求" class="headerlink" title="4.3 发送Http请求"></a>4.3 发送Http请求</h3><p>类：StatementClientV1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private Request buildQueryRequest(ClientSession session, String query)</span><br><span class="line"> &#123;</span><br><span class="line">     HttpUrl url = HttpUrl.get(session.getServer());</span><br><span class="line">     if (url == null) &#123;</span><br><span class="line">         throw new ClientException(&quot;Invalid server URL: &quot; + session.getServer());</span><br><span class="line">     &#125;</span><br><span class="line">     // 注意路径</span><br><span class="line">     url = url.newBuilder().encodedPath(&quot;/v1/statement&quot;).build();</span><br><span class="line">     Request.Builder builder = prepareRequest(url).post(RequestBody.create(MEDIA_TYPE_TEXT, query));</span><br><span class="line">		...</span><br><span class="line">     return builder.build();</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-4-Coordinator处理请求"><a href="#4-4-Coordinator处理请求" class="headerlink" title="4.4 Coordinator处理请求"></a>4.4 Coordinator处理请求</h3><p>类：StatementResource</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@Path(&quot;/v1/statement&quot;)</span><br><span class="line">public class StatementResource &#123;</span><br><span class="line">@POST</span><br><span class="line">	@Produces(MediaType.APPLICATION_JSON)</span><br><span class="line">	public Response createQuery(</span><br><span class="line">			String statement,</span><br><span class="line">			@HeaderParam(X_FORWARDED_PROTO) String proto,</span><br><span class="line">			@Context HttpServletRequest servletRequest,</span><br><span class="line">			@Context UriInfo uriInfo) &#123;</span><br><span class="line">       ...</span><br><span class="line">       // 核心</span><br><span class="line">		Query query = Query.create(</span><br><span class="line">				sessionContext,</span><br><span class="line">				statement,</span><br><span class="line">				queryManager,</span><br><span class="line">				sessionPropertyManager,</span><br><span class="line">				exchangeClient,</span><br><span class="line">				responseExecutor,</span><br><span class="line">				timeoutExecutor,</span><br><span class="line">				blockEncodingSerde);</span><br><span class="line">		queries.put(query.getQueryId(), query);</span><br><span class="line">		// 获取结果</span><br><span class="line">		QueryResults queryResults = query.getNextResult(OptionalLong.empty(), uriInfo, proto, DEFAULT_TARGET_RESULT_SIZE);</span><br><span class="line">		...</span><br><span class="line">		return toResponse(query, queryResults);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 后面逻辑较多，具体怎么个处理，有兴趣的可以参考：<a href="https://github.com/leoChaoGlut/presto-research/blob/master/presto-research-doc/%E4%B8%80%E6%9D%A1sql%E5%A6%82%E4%BD%95%E8%A2%ABpresto%E6%89%A7%E8%A1%8C.yml" target="_blank" rel="noopener">一条sql如何倍presto执行的。</a></p>
+<h2 id="5、Hive-Connector"><a href="#5、Hive-Connector" class="headerlink" title="5、Hive Connector"></a>5、Hive Connector</h2><p>Presto查询过程和Hive不同，它是从Hive-Metastore里面获取表的元数据信息和与之关联的数据文件信息，然后利用HdfsEnvironment操作HDFS文件。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkZjFiNTA0ZTRiMDhkZDU2NTk0OGFjMS5wbmc?x-oss-process=image/format,png" alt></p>
+<ul>
+<li><p>persto配置的hive.properties文件</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">connector.name=hive-hadoop2</span><br><span class="line">hive.metastore.uri=thrift://p1:9083</span><br><span class="line">hive.metastore-cache-ttl=0s</span><br><span class="line">hive.metastore-refresh-interval=0s</span><br><span class="line">// hdfs信息相关配置文件位置</span><br><span class="line">hive.config.resources=/etc/hive/conf/core-site.xml,/etc/hive/conf/hdfs-site.xml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取Hive Metastore元数据</p>
+<p>类：HiveMetastoreClientFactory</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public HiveMetastoreClient create(HostAndPort address)throws TTransportException &#123;</span><br><span class="line">		return new ThriftHiveMetastoreClient(Transport.create(address, sslContext, socksProxy, timeoutMillis, metastoreAuthentication));</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>HiveMetastoreClient 里面方法，curd操作</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20191213100550170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nZmFuMzIy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>加载元数据</li>
+</ul>
+<p>类：CachingHiveMetastore</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@ThreadSafe</span><br><span class="line">public class CachingHiveMetastore implements ExtendedHiveMetastore&#123;</span><br><span class="line"> //这里面有2个关键配置项，其他配置可以参看MetastoreClientConfig里面配置</span><br><span class="line"> // hive.metastore-refresh-interval，默认0</span><br><span class="line"> // hive.metastore-cache-ttl，默认0</span><br><span class="line">  public CachingHiveMetastore（...）&#123;</span><br><span class="line">   // 主要的逻辑都是在构造函数里面完成的，太多了，省略了</span><br><span class="line">  ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取FileSystem</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public FileSystem getFileSystem(String user, Path path, Configuration configuration)</span><br><span class="line">			throws IOException &#123;</span><br><span class="line">		return hdfsAuthentication.doAs(user, () -&gt; &#123;</span><br><span class="line">		// 从我们配置的hive的catalog文件里面读取hdfs相关信息</span><br><span class="line">			FileSystem fileSystem = path.getFileSystem(configuration);</span><br><span class="line">			fileSystem.setVerifyChecksum(verifyChecksum);</span><br><span class="line">			return fileSystem;</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6、插件开发"><a href="#6、插件开发" class="headerlink" title="6、插件开发"></a>6、插件开发</h2><h3 id="6-1-Connector开发"><a href="#6-1-Connector开发" class="headerlink" title="6.1 Connector开发"></a>6.1 Connector开发</h3><p>Presto目前支持很多的数据源，数据源都是以plugin形式添加的。下面是我安装的presto里面的plugin</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 tpch</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 mongodb</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 session-property-managers</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 postgresql</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 kudu</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 geospatial</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 example-http</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 localfile</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 mysql</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 atop</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 accumulo</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 sqlserver</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 redis</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 presto-elasticsearch</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 password-authenticators</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 blackhole</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 redshift</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 kafka</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 jmx</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 teradata-functions</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 resource-group-managers</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 presto-thrift</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 memory</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 tpcds</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 raptor</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 ml</span><br><span class="line">drwxr-xr-x 2 root root 4096 Oct 29 13:34 cassandra</span><br><span class="line">drwxr-xr-x 2 root root 4096 Nov 25 21:39 hive-hadoop2</span><br></pre></td></tr></table></figure>
+<h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><blockquote>
+<p>源代码里面有presto-example-http 的自定义connector代码示例。</p>
+</blockquote>
+<ul>
+<li>添加插件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">presto-main/etc/config.properties下</span><br><span class="line"></span><br><span class="line">plugin.bundles=\</span><br><span class="line">  ../presto-blackhole/pom.xml,\</span><br><span class="line">  ../presto-memory/pom.xml,\</span><br><span class="line">  ../presto-jmx/pom.xml,\</span><br><span class="line">  ../presto-raptor/pom.xml,\</span><br><span class="line">  ../presto-hive-hadoop2/pom.xml,\</span><br><span class="line">  //*******官方示例 example-http *********</span><br><span class="line">  ../presto-example-http/pom.xml,\</span><br><span class="line">  ../presto-kafka/pom.xml, \</span><br><span class="line">  ../presto-tpch/pom.xml, \</span><br><span class="line">  ../presto-local-file/pom.xml, \</span><br><span class="line">  ../presto-mysql/pom.xml,\</span><br><span class="line">  ../presto-sqlserver/pom.xml, \</span><br><span class="line">  ../presto-postgresql/pom.xml, \</span><br><span class="line">  ../presto-tpcds/pom.xml</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要实现的接口</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// presto 会加载所有实现了Plugin的实现类</span><br><span class="line">Plugin</span><br><span class="line">// 实例化Connector工厂</span><br><span class="line">ConnectorFactory</span><br><span class="line">// connector连接器，里面有metadata、splitManager、recordSetProvider等实例</span><br><span class="line">Connector</span><br><span class="line">// 元数据管理（schemas、tables等）</span><br><span class="line">ConnectorMetadata</span><br><span class="line">// 数据分片</span><br><span class="line">ConnectorSplitManager</span><br><span class="line">// 数据读取类</span><br><span class="line">ConnectorRecordSetProvider</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>示例代码</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 插件</span><br><span class="line">public class ExamplePlugin implements Plugin &#123;</span><br><span class="line">	@Override</span><br><span class="line">	public Iterable&lt;ConnectorFactory&gt; getConnectorFactories() &#123;</span><br><span class="line">		return ImmutableList.of(new ExampleConnectorFactory());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 连接器工厂</span><br><span class="line">public class ExampleConnectorFactory implements ConnectorFactory &#123;</span><br><span class="line">    ...</span><br><span class="line">	@Override</span><br><span class="line">	public Connector create(String catalogName, Map&lt;String, String&gt; requiredConfig, ConnectorContext context) &#123;</span><br><span class="line">			...</span><br><span class="line">			// 获取Connector 实例</span><br><span class="line">			return injector.getInstance(ExampleConnector.class);</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 连接器，里面包含元数据管理，数据分片，数据读取类 等实例变量</span><br><span class="line">public class ExampleConnector implements Connector&#123;</span><br><span class="line"> private static final Logger log = Logger.get(ExampleConnector.class);</span><br><span class="line"> </span><br><span class="line">    private final LifeCycleManager lifeCycleManager;</span><br><span class="line">    private final ExampleMetadata metadata;</span><br><span class="line">    private final ExampleSplitManager splitManager;</span><br><span class="line">    private final ExampleRecordSetProvider recordSetProvider;</span><br><span class="line">    // get/set 方法 ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="6-2-函数开发"><a href="#6-2-函数开发" class="headerlink" title="6.2 函数开发"></a>6.2 函数开发</h3><p>Presto自定义了很多函数，在<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 函数分类：</span><br><span class="line"></span><br><span class="line">	* 标量函数（scalar）</span><br><span class="line">	* 聚合函数（aggregation）</span><br><span class="line">	* 开窗函数（window）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* 代码示例</span><br></pre></td></tr></table></figure></p>
+<p>// 标量函数</p>
+<p>@Description(“return array containing elements that match the given predicate”)//函数描述<br>@ScalarFunction(value = “filter”, deterministic = false)<br>public final class ArrayFilterFunction{</p>
+<pre><code>@TypeParameter(&quot;T&quot;)
+@TypeParameterSpecialization(name = &quot;T&quot;, nativeContainerType = long.class) // 参数类型
+@SqlType(&quot;array(T)&quot;)// 返回函数类型
+public static Block filterLong(
+        @TypeParameter(&quot;T&quot;) Type elementType,
+        @SqlType(&quot;array(T)&quot;) Block arrayBlock,
+        @SqlType(&quot;function(T, boolean)&quot;) FilterLongLambda function){
+     ...
+     实现逻辑
+     ...
+    BlockBuilder resultBuilder = elementType.createBlockBuilder(null, positionCount);
+    return resultBuilder.build();
+}
+</code></pre><p>}</p>
+<p>// 开窗函数</p>
+<p>@WindowFunctionSignature(name = “rank”, returnType = “bigint”)<br>public class RankFunction extends RankingWindowFunction{<br>    private long rank;<br>    private long count;</p>
+<pre><code>@Override
+public void reset(){
+    rank = 0;
+    count = 1;
+}
+@Override
+public void processRow(BlockBuilder output, boolean newPeerGroup, int peerGroupCount, int currentPosition){
+    if (newPeerGroup) {
+        rank += count;
+        count = 1;
+    }
+    else {
+        count++;
+    }
+    BIGINT.writeLong(output, rank);
+}
+</code></pre><p>}</p>
+<p>// 聚合函数</p>
+<p>@AggregationFunction(“count”)<br>public final class CountAggregation {<br>    private CountAggregation() {<br>    }<br>    // 数据在每个worker上分片输入<br>    @InputFunction<br>    public static void input(@AggregationState LongState state) {<br>        state.setLong(state.getLong() + 1);<br>    }<br>    // worker间数据聚合<br>    @CombineFunction<br>    public static void combine(@AggregationState LongState state, @AggregationState LongState otherState) {<br>        state.setLong(state.getLong() + otherState.getLong());<br>    }<br>     // 规约输出结果<br>    @OutputFunction(StandardTypes.BIGINT)<br>    public static void output(@AggregationState LongState state, BlockBuilder out) {<br>        BIGINT.writeLong(out, state.getLong());<br>    }<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 7、性能优化</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* Order by + limit</span><br><span class="line"></span><br><span class="line">order by 会扫描worker上表数据，耗内存，结合limit 使用减少计算消耗。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* Group By</span><br><span class="line"></span><br><span class="line">需要分组的字段，distinct后数量倒序放置</span><br></pre></td></tr></table></figure>
+<p>select count(1),uid,age from user_sales group by uid,age;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 使用模糊聚合函数</span><br><span class="line"> </span><br><span class="line"> &gt;用精准误差换性能。</span><br></pre></td></tr></table></figure>
+<p>//不推荐<br>select count(distinct(age)) from user_sales;<br>//推荐<br>select count(approx_distinct(age)) from user_sales;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">* 合并like</span><br></pre></td></tr></table></figure>
+<p>//不推荐<br>select <em> from user_sales where name like ‘%a%’ or name like ‘%b%’ or  name like ‘%c%’;<br>//推荐<br>select </em> from user_sales where name regexp_like(name, a|b|c); </p>
+<p><code>`</code></p>
+<ul>
+<li>大表 join 小表</li>
+</ul>
+<p>Presto 使用的是Distributed Hash Join，优先将右表进行hash分区的数据配发到集群中所有woker上（请确保此时的woker内存&gt;右表大小），然后才将左表hash的分区依次传输到相应的集群节点上。即，右表数据的分区会先全部到分布到所有计算节点，左表hash分区是流式传输到相应的计算节点。</p>
+<ul>
+<li>关闭 Distributed Hash Join</li>
+</ul>
+<p>如果数据存在倾斜，hash join 性能急剧下降，此时可以通过 <code>`</code>set session distributes_join=’false’关闭hash join。那么2表就不会进行hash重分布，右表会被广播到左表Source Stage 的每个节点做join。</p>
+<ul>
+<li>使用ORC存储和snappy压缩</li>
+</ul>
+<p>针对hive创建表，建议使用orc格式存储，preto在代码层面对orc格式做了很多优化。 数据压缩可以减少节点间数据传输对IO带宽压力，对于即席查询需要快速解压，snappy比较合适。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/05/日常用的一些命令，包括linux，git/" rel="next" title="日常用的一些命令，包括linux，git">
+                <i class="fa fa-chevron-left"></i> 日常用的一些命令，包括linux，git
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/05/Alluxio+Presto 查询/" rel="prev" title="Alluxio+Presto 查询">
+                Alluxio+Presto 查询 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">安迪·梵</p>
+              <div class="site-description motion-element" itemprop="description">keep it simple and stupid</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:huangfan0908@gmail.com" title="E-Mail &rarr; mailto:huangfan0908@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andyfan322" title="GitHub &rarr; https://github.com/Andyfan322" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/3984800033" title="Weibo &rarr; https://weibo.com/u/3984800033" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Presto"><span class="nav-text">Presto</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、简介"><span class="nav-text">1、简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、特性"><span class="nav-text">2、特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、基本概念"><span class="nav-text">3、基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-服务进程"><span class="nav-text">3.1 服务进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Presto模型"><span class="nav-text">3.2 Presto模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Presto查询模型"><span class="nav-text">3.3 Presto查询模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-模型术语"><span class="nav-text">3.3.1 模型术语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-查询过程"><span class="nav-text">3.3.1 查询过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、查询流程解析"><span class="nav-text">4、查询流程解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-客户端发起请求"><span class="nav-text">4.1 客户端发起请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-执行客户端命令"><span class="nav-text">4.2 执行客户端命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-发送Http请求"><span class="nav-text">4.3 发送Http请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-Coordinator处理请求"><span class="nav-text">4.4 Coordinator处理请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、Hive-Connector"><span class="nav-text">5、Hive Connector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、插件开发"><span class="nav-text">6、插件开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-Connector开发"><span class="nav-text">6.1 Connector开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#步骤"><span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-函数开发"><span class="nav-text">6.2 函数开发</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安迪·梵</span>
+
+  
+
+  
+</div>
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+    appKey: 'scOU3TGgNidrzFxQLIYGHIJg',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+                'X-LC-Key': 'scOU3TGgNidrzFxQLIYGHIJg',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

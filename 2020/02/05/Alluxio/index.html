@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="alluxio简单使用 本文是基于alluxio官网和自己实践整理。   Alluxio版本：1.8.1 CDH 1.15.2  1、介绍以内存为中心的分布式虚拟存储系统。Alluxio在上层计算框架和底层存储系统之间架起了桥梁，应用层只需要访问Alluxio即可以访问底层对接了的任意存储系统的数据。作者是李浩源/范斌，都是中国人，所以官网 也提供了中文的文档。  2、功能简介 灵活的API 兼容">
+<meta name="keywords" content="spring、分布式、架构、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Alluxio">
+<meta property="og:url" content="http://yoursite.com/2020/02/05/Alluxio/index.html">
+<meta property="og:site_name" content="xiaofang&#39;s blog">
+<meta property="og:description" content="alluxio简单使用 本文是基于alluxio官网和自己实践整理。   Alluxio版本：1.8.1 CDH 1.15.2  1、介绍以内存为中心的分布式虚拟存储系统。Alluxio在上层计算框架和底层存储系统之间架起了桥梁，应用层只需要访问Alluxio即可以访问底层对接了的任意存储系统的数据。作者是李浩源/范斌，都是中国人，所以官网 也提供了中文的文档。  2、功能简介 灵活的API 兼容">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019111910224256.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nZmFuMzIy,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkY2I3ZWQxZTRiMDkzOGE0M2Q0MTcwYi5wbmc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkY2I4NGFmZTRiMDkzOGE0M2Q0MWY1NC5wbmc?x-oss-process=image/format,png">
+<meta property="og:updated_time" content="2020-02-05T08:40:38.664Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Alluxio">
+<meta name="twitter:description" content="alluxio简单使用 本文是基于alluxio官网和自己实践整理。   Alluxio版本：1.8.1 CDH 1.15.2  1、介绍以内存为中心的分布式虚拟存储系统。Alluxio在上层计算框架和底层存储系统之间架起了桥梁，应用层只需要访问Alluxio即可以访问底层对接了的任意存储系统的数据。作者是李浩源/范斌，都是中国人，所以官网 也提供了中文的文档。  2、功能简介 灵活的API 兼容">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019111910224256.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nZmFuMzIy,size_16,color_FFFFFF,t_70">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xiaofang's blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/02/05/Alluxio/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Alluxio | xiaofang's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/Andyfan322" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaofang's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/05/Alluxio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安迪·梵">
+      <meta itemprop="description" content="keep it simple and stupid">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaofang's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Alluxio
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-05 16:30:17 / 修改时间：16:40:38" itemprop="dateCreated datePublished" datetime="2020-02-05T16:30:17+08:00">2020-02-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2020/02/05/Alluxio/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/02/05/Alluxio/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2020/02/05/Alluxio/" class="leancloud_visitors" data-flag-title="Alluxio">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="alluxio简单使用"><a href="#alluxio简单使用" class="headerlink" title="alluxio简单使用"></a>alluxio简单使用</h1><blockquote>
+<p>本文是基于alluxio官网和自己实践整理。</p>
+</blockquote>
+<ul>
+<li>Alluxio版本：1.8.1</li>
+<li>CDH 1.15.2</li>
+</ul>
+<h2 id="1、介绍"><a href="#1、介绍" class="headerlink" title="1、介绍"></a>1、介绍</h2><p>以内存为中心的分布式虚拟存储系统。Alluxio在上层计算框架和底层存储系统之间架起了桥梁，应用层只需要访问Alluxio即可以访问底层对接了的任意存储系统的数据。作者是李浩源/范斌，都是中国人，所以<a href="https://docs.alluxio.io/os/user/stable/en/Overview.html" target="_blank" rel="noopener">官网</a> 也提供了中文的文档。</p>
+<p><img src="https://img-blog.csdnimg.cn/2019111910224256.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nZmFuMzIy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="2、功能简介"><a href="#2、功能简介" class="headerlink" title="2、功能简介"></a>2、功能简介</h2><ul>
+<li>灵活的API</li>
+<li>兼容Haddop 的HDFS文件系统接口</li>
+<li>分级存储，自定义分配和回收策略</li>
+<li>统一命名空间</li>
+<li>完整的命令行</li>
+<li>Web UI</li>
+</ul>
+<h2 id="3、下载编译"><a href="#3、下载编译" class="headerlink" title="3、下载编译"></a>3、下载编译</h2><p>默认从官网下载的执行包，支持的Hadoop 2.2.x，一般我们需要自己编译源码。从<a href="https://github.com/Alluxio/alluxio" target="_blank" rel="noopener">gitHub</a>上下载下来，通过以下命令构建适合自己的版本</p>
+<ul>
+<li><figure class="highlight plain"><figcaption><span>-T 2C install -Phadoop-2 -Dhadoop.version</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 说明</span><br><span class="line">   * -T 2C：开启多线程编译，每个核cpu开启2个线程</span><br><span class="line">   * -P：hadoop-2 为haddop大版本，可以是hadoop-1、hadoop-3</span><br><span class="line">   * -D：具体细分版本号，我们这里是cdh版本</span><br><span class="line"></span><br><span class="line">## 4、搭建和部署</span><br><span class="line">&gt; 部署一般建议和计算框架同置（co-locate）部署。本次以3台做个集群，其中p1机器是alluxio主节点，若要做高可用可引入zk（2.0版本会使用masters自身做高可用，不需要zk），这里没有做高可用配置。</span><br><span class="line"> </span><br><span class="line">* 下载/编译出适合自己的执行包</span><br><span class="line">* 上传到服务器上（3台都要）,我将源码文件放在```/usr/local/git```并软链接到```/opt```下，后续我就直接在```/opt```下操作</span><br><span class="line">* 选取其中一台机器作为主节点master,hostname是p1</span><br><span class="line">* 在```$&#123;ALLUXIO_HOME&#125;/conf```下</span><br><span class="line">     * ```cp conf/alluxio-site.properties.template conf/alluxio-site.properties</span><br></pre></td></tr></table></figure>
+<ul>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">     * ```alluxio.underfs.address=hdfs://p1:8020/alluxio/home```（namenode地址，即将hdfs跟路径挂载到alluxio下）</span><br><span class="line">     * ```workers```文件里面添加woker主机名字，例如我这里是p2、p3</span><br><span class="line">     * ```masters```文件里面添加master主机名字，例如我这里是p1</span><br><span class="line">     * 利用alluxio提供拷贝命令到其他集群机器 </span><br><span class="line">     </span><br><span class="line">* 在hdfs 上新建```/alluxio/home```目录，```hdfs dfs -mkdir /alluxio/home</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>启动Alluxio</p>
+<ul>
+<li>用启动hadoop同一用户来启动，例如hdfs</li>
+<li><figure class="highlight plain"><figcaption><span>$&#123;ALLUXIO_HOME&#125;/bin，然后运行 ./alluxio format ```，只是第一次需要运行，会清空alluxio里面的数据</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* ```cd $&#123;ALLUXIO_HOME&#125;/bin，然后运行 ./alluxio-start.sh all SudoMount ```，过程需要输入几次启动用户的密码</span><br><span class="line">*  SudoMount 只是在第一次启动需要加，目的是挂载```/mnt/ramdisk```给alluxio作为默认的存储，若是一直hang住，检查启动用户是否配置了免密，我是将```hdfs    ALL=(ALL)     NOPASSWD: ALL```加入了```/etc/sudoers```里面。</span><br><span class="line">*  ```$&#123;ALLUXIO_HOME&#125;/bin  ./alluxio runTests```测试集群，其实就是上传一些文件到```/alluxio/home</span><br></pre></td></tr></table></figure>
+<ul>
+<li>到web UI查看：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* 执行命令查看集群信息：```cd $&#123;ALLUXIO_HOME&#125;/bin```然后```./alluxio fsadmin report</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="5、系统架构与原理"><a href="#5、系统架构与原理" class="headerlink" title="5、系统架构与原理"></a>5、系统架构与原理</h2><h3 id="5-1-与操作系统文件系统对比"><a href="#5-1-与操作系统文件系统对比" class="headerlink" title="5.1 与操作系统文件系统对比"></a>5.1 与操作系统文件系统对比</h3><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkY2I3ZWQxZTRiMDkzOGE0M2Q0MTcwYi5wbmc?x-oss-process=image/format,png" alt></p>
+<h3 id="5-2-系统组件"><a href="#5-2-系统组件" class="headerlink" title="5.2 系统组件"></a>5.2 系统组件</h3><h4 id="集群组成：master、worker、client、UFS（底层存储）"><a href="#集群组成：master、worker、client、UFS（底层存储）" class="headerlink" title="集群组成：master、worker、client、UFS（底层存储）"></a>集群组成：master、worker、client、UFS（底层存储）</h4><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2Fzc2V0cy5wcm9jZXNzb24uY29tL2NoYXJ0X2ltYWdlLzVkY2I4NGFmZTRiMDkzOGE0M2Q0MWY1NC5wbmc?x-oss-process=image/format,png" alt>   </p>
+<p><strong>master</strong></p>
+<ul>
+<li>管理集群的元数据<ul>
+<li>文件inode树</li>
+<li>文件到数据块block的映射</li>
+<li>数据快block到woker位置的映射</li>
+<li>woker元数据（worker的状态）</li>
+</ul>
+</li>
+<li><p>被动响应客户端RPC请求</p>
+<ul>
+<li>client的对请求文件的操作</li>
+<li>woker汇报状态心跳</li>
+</ul>
+</li>
+<li><p>记录文件系统日志（集群重启后可以准确恢复）</p>
+</li>
+</ul>
+<p><strong>secondary master</strong></p>
+<p>高可用模式下，集群可以有多个master节点，其中只有一个会被选举为primary mater，其余均为standby状态，称为secondary master，它不接受任何Alluxio组件的请求，只是将文件系统的日志持久化存储，在多个master间共享。</p>
+<p><strong>worker</strong></p>
+<ul>
+<li>管理本机的存储资源（RAM、SSD、HDD）</li>
+<li>和底层存储（UFS）交互，缓存数据</li>
+<li>根据配置的缓存替换策略分配保存缓存数据</li>
+</ul>
+<p><strong>client</strong></p>
+<ul>
+<li>向master发起操作文件的RPC请求</li>
+<li>从worker读取写入数据</li>
+<li>client的jar包在编译后的源码文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">* client jar 不能单独使用，需要与应用程序在同一个JVM里面，否则会抛异常</span><br><span class="line">* woker与client在一台机器，会短路读取数据（绕过请求worker的RPC请求，直接用本地文件系统读取woker里数据）</span><br><span class="line"></span><br><span class="line">### 5.3、读写</span><br><span class="line"></span><br><span class="line">#### 5.3.1 读</span><br><span class="line"></span><br><span class="line">关键配置参数：```alluxio.user.file.readtype.default</span><br></pre></td></tr></table></figure></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">值</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">CACHE_PROMOTE（默认）</td>
+<td style="text-align:center">将数据块移动到worker最顶层，且缓存一个副本到本机worker</td>
+</tr>
+<tr>
+<td style="text-align:center">CACHE</td>
+<td style="text-align:center">将一个副本添加到本地worker中</td>
+</tr>
+<tr>
+<td style="text-align:center">NO_CACHE</td>
+<td style="text-align:center">不会创建副本</td>
+</tr>
+</tbody>
+</table>
+<h5 id="1-命中worker"><a href="#1-命中worker" class="headerlink" title="1.命中worker"></a>1.命中worker</h5><p>命中本地worker（“短路读取”）</p>
+<blockquote>
+<p>此时client直接通过本地文件系统读取存储在worker上的数据，称作为“短路读取”。</p>
+</blockquote>
+<ul>
+<li>此时需要获取本地文件的操作权限</li>
+<li><p>容器化容器里面运行alluxio client 和woker，可以通过 Unix domain socket 方式访问。</p>
+<blockquote>
+<p>Unix domain socket 又叫 IPC(inter-process communication 进程间通信) 主要用于同一主机上的进程间通信。与主机间的进程通信不同，它不是通过 “IP地址:端口号”的方式进程通信，不需要经过网络协议栈，不需要打包拆包、计算校验和、维护序号和应答等，只是将应用层数据从一个进程拷贝到另一个进程，使用 socket 类型的文件来完成通信。</p>
+</blockquote>
+</li>
+</ul>
+<p>命中远程worker   </p>
+<ul>
+<li>client 通过RPC连接远程的worker，woker 处理请求返回client数据</li>
+<li>并缓存一个副本在本地(发起rpc的机器的worker)，这样可以加快下一次访问，但是副本数会增多，引起数据爆炸（但是这也是alluxio的特点，不像hdfs那样设置副本后就是固定死了）我们可以通过设置ReadType为NO_CACHE不缓存副本。</li>
+<li>2.0版本里面会有针对某个文件设置缓存的副本数量（但是没有全局的设置副本数量）</li>
+</ul>
+<h5 id="2-未命worker"><a href="#2-未命worker" class="headerlink" title="2.未命worker"></a>2.未命worker</h5><ul>
+<li>1.8  之前版本，alluxio client 会承担缓存任务，还需要配置读取的数据是部分还是整个，采取缓存/不缓存</li>
+<li><p>1.8 之后，缓存数据的任务交给woker异步执行，不需要关心读取的数据是完整的还是部分，因为所有的动作都在woker这边，默认woker工作机制是这样</p>
+<ul>
+<li>客户端顺序完整读取文件，则woker顺便缓存整个文件副本</li>
+<li>客户端不是顺序/完整读取，则woker会放弃读取时候顺便缓存，但是客户端会在读取完成后向woker发送异步缓存命令，worker 会继续缓存整个文件。</li>
+<li>woker节点线程池大小：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">#### 5.3.2 写</span><br><span class="line"></span><br><span class="line">关键配置参数：```alluxio.user.file.writetype.default</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>写类型</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">值</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">MUST_CACHE（默认）</td>
+<td style="text-align:center">同步将数据存储在Alluxio中（不怕丢）， 本地有worker，“短路写”，本地无worker，写入远程woker</td>
+</tr>
+<tr>
+<td style="text-align:center">THROUGH</td>
+<td style="text-align:center">同步将数据存储在UFS中（怕丢，但是数据不会立即用到）</td>
+</tr>
+<tr>
+<td style="text-align:center">CACHE_THROUGH</td>
+<td style="text-align:center">同步将数据存储在Alluxio中和UFS中（怕丢，且数据会立即用到）</td>
+</tr>
+<tr>
+<td style="text-align:center">ASYNC_THROUGH（异步）</td>
+<td style="text-align:center">同步将数据写入到alluxio，所有数据块block会驻留在一个woker上，然后异步地写入底层存储系统。实验性写类型，2.0 版本会稳定些</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>写定位策略</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">值</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">LocalFirstPolicy（默认）</td>
+<td style="text-align:center">优先使用本地worker，若本地Worker没有足够的容量，从有效的worker列表中随机选择一个</td>
+</tr>
+<tr>
+<td style="text-align:center">MostAvailableFirstPolicy</td>
+<td style="text-align:center">使用拥有最多可用容量的worker</td>
+</tr>
+<tr>
+<td style="text-align:center">RoundRobinPolicy</td>
+<td style="text-align:center">循环选取存储下一个数据块的worker，若该worker没有足够的容量，跳过</td>
+</tr>
+<tr>
+<td style="text-align:center">SpecificHostPolicy</td>
+<td style="text-align:center">返回指定主机名的Worker</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6、与HDFS集成"><a href="#6、与HDFS集成" class="headerlink" title="6、与HDFS集成"></a>6、与HDFS集成</h2><h3 id="6-1-前提"><a href="#6-1-前提" class="headerlink" title="6.1 前提"></a>6.1 前提</h3><ul>
+<li>HDFS 集群启动</li>
+<li>Alluxio编译打包成对应的HDFS版本（参考上述下载编译）</li>
+<li>上传Alluxio编译后的源码包到集群机器上，我的位置为<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">* 确定好namenode的地址，我的cdh版本这里是：```hdfs://p1:8020```，p1为我namenode主机的ip</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 6.2 集成配置</span><br><span class="line"></span><br><span class="line">#### 配置方式</span><br><span class="line"></span><br><span class="line">* 普通模式：参考上面，搭建和部署目录</span><br><span class="line">* 高可用模式</span><br><span class="line">   * 将Hadoop目录下的```hds-site.xml、core-site.xml```软链接到```$&#123;ALLUXIO_HOME&#125;/conf```下</span><br><span class="line">   * 更改```&#123;ALLUXIO_HOME&#125;/conf```下的```alluxio-site.properties```里面的属性```alluxio.underfs.address=nameservice```，其中nameservice为```core-site.xml```文件里面配置的HDFS服务名称。</span><br><span class="line"></span><br><span class="line">#### 权限</span><br><span class="line"></span><br><span class="line">alluxio文件系统实现了类似POSIX文件系统的用户和权限验证，所以我们需要确保HDFS上的用户、组和访问模式等文件的权限信息与Alluxio里面一致。alluxio提供了用户模拟功能，我们在```&#123;ALLUXIO_HOME&#125;/conf```里的```alluxio-site.properties```添加：</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>alluxio.master.security.impersonation.hdfs.users=<em><br>alluxio.master.security.impersonation.yarn.users=</em><br>alluxio.master.security.impersonation.hive.users=<em><br>alluxio.master.security.impersonation.root.users=</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   </span><br><span class="line">## 7、常用命令</span><br><span class="line"></span><br><span class="line">通过上述的步骤，基本的一个基于HDFS存储的Alluxio集群搭建好了，我们一起来试试常用的命令感受下。首先```cd &#123;ALLUXIO_HOME&#125;/alluxio/bin```下。</span><br><span class="line"></span><br><span class="line">### 7.1 管理员命令(fsadmin)</span><br></pre></td></tr></table></figure></p>
+<p>[hdfs@p1 bin]$ ./alluxio fsadmin<br>Usage: alluxio fsadmin [generic options]<br>     [backup [directory] [–local]]<br>     [doctor [category]]<br>     [report [category] [category args]]<br>     [ufs [–mode &lt;noAccess/readOnly/readWrite&gt;] <ufspath>]<br>[hdfs@p1 bin]$<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* backup 备份元数据</span><br></pre></td></tr></table></figure></ufspath></p>
+<p>// 备份到hdfs中<br>[hdfs@p1 bin]$ ./alluxio fsadmin backup /meta<br>Successfully backed up journal to hdfs://p1:8020/meta/alluxio-backup-2019-11-13-1573636945711.gz<br>// 备份到本地文件中<br>[hdfs@p1 bin]$ ./alluxio fsadmin backup  /opt/ –local<br>Successfully backed up journal to file:///opt/alluxio-backup-2019-11-13-1573637112922.gz on master p1<br>// 从备份文件中恢复元数据<br>hdfs@p1 bin]$ ./alluxio-start.sh -i /opt/alluxio-backup-2019-11-13-1573637112922.gz masters<br>Executing the following command on all master nodes and logging to /usr/local/git/alluxio/logs/task.log: /usr/local/git/alluxio/bin/alluxio-stop.sh master<br>Waiting for tasks to finish…<br>All tasks finished<br>Executing the following command on all master nodes and logging to /usr/local/git/alluxio/logs/task.log: /usr/local/git/alluxio/bin/alluxio-start.sh -i /opt/alluxio-backup-2019-11-13-1573637112922.gz master<br>Waiting for tasks to finish…<br>All tasks finished<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* doctor 检查alluxio的配置</span><br></pre></td></tr></table></figure></p>
+<p>[hdfs@p1 bin]$ ./alluxio fsadmin doctor<br>No server-side configuration errors or warnings.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">	 </span><br><span class="line">* report 报告集群信息</span><br></pre></td></tr></table></figure></p>
+<p>// 有4个可选项，默认集群信息摘要，如：web界面地址，端口，woker数目等<br>[hdfs@p1 bin]$ ./alluxio fsadmin report -h<br>report [category] [category args]<br>Report Alluxio running cluster information.<br>Where [category] is an optional argument. If no arguments are passed in, summary information will be printed out.<br>[category] can be one of the following:<br>    capacity         worker capacity information<br>    metrics          metrics information<br>    summary          cluster summary(默认)<br>    ufs              under filesystem information</p>
+<p>// capacity， wokers的容量信息汇总<br>[hdfs@p1 bin]$ ./alluxio fsadmin report capacity<br>Capacity information for all workers:<br>    Total Capacity: 20.68GB<br>        Tier: MEM  Size: 20.68GB<br>    Used Capacity: 0B<br>        Tier: MEM  Size: 0B<br>    Used Percentage: 0%<br>    Free Percentage: 100%</p>
+<p>Worker Name      Last Heartbeat   Storage       MEM<br>p2               0                capacity      10.34GB<br>                                  used          0B (0%)<br>p3               0                capacity      10.34GB<br>                                  used          0B (0%)<br>// ufs 集群配置底层存储系统信息<br>[hdfs@p1 bin]$ ./alluxio fsadmin report ufs<br>Alluxio under filesystem information:<br>hdfs://p1:8020/alluxio/home                                   on  /                    (hdfs, capacity=70.64GB, used=1197.66MB(1%), not read-only, not shared, properties={})<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* ufs 存储层文件系统</span><br></pre></td></tr></table></figure></p>
+<p>// 有一个 –mode 可选择项目，下面可以跟三个参数<br>[hdfs@p1 bin]$ ./alluxio  fsadmin ufs -h<br>Usage: ufs [–mode &lt;noAccess/readOnly/readWrite&gt;] <ufspath><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 7.1 普通用户命令(fs)</span><br></pre></td></tr></table></figure></ufspath></p>
+<p>[hdfs@p1 bin]$ ./alluxio fs<br>Usage: alluxio fs [generic options]<br>     [cat <path>]<br>     [checkConsistency [-r] <alluxio path>]<br>     [checksum <alluxio path>]<br>     [chgrp [-R] <group> <path>]<br>     [chmod [-R] <mode> <path>]<br>     [chown [-R] <owner>[:<group>] <path>]<br>     [copyFromLocal <src> <remotedst>]<br>     [copyToLocal <src> <localdst>]<br>     [count <path>]<br>     [cp [-R] <src> <dst>]<br>     [createLineage &lt;inputFile1,…&gt; &lt;outputFile1,…&gt; [&lt;cmd_arg1&gt; &lt;cmd_arg2&gt; …]]<br>     [deleteLineage <lineageid> &lt;cascade(true|false)&gt;]<br>     [du <path>]<br>     [fileInfo <path>]<br>     [free [-f] <path>]<br>     [getCapacityBytes]<br>     [getUsedBytes]<br>     [head [-c <bytes>] <path>]<br>     [help [<command>]]<br>     [leader]<br>     [listLineages]<br>     [load [–local] <path>]<br>     [loadMetadata <path>]<br>     [location <path>]<br>     [ls [-d|-f|-p|-R|-h|–sort=option|-r] <path>]<br>     [masterInfo]<br>     [mkdir <path1> [path2] … [pathn]]<br>     [mount [–readonly] [–shared] [–option &lt;key=val&gt;] <alluxiopath> <ufsuri>]<br>     [mv <src> <dst>]<br>     [persist <path> [<path> …]]<br>     [pin <path>]<br>     [report <path>]<br>     [rm [-R] [-U] [–alluxioOnly] <path>]<br>     [setTtl [–action delete|free] <path> <time to live>]<br>     [stat [-f <format>] <path>]<br>     [tail [-c <bytes>] <path>]<br>     [test [-d|-f|-e|-s|-z] <path>]<br>     [touch <path>]<br>     [unmount <alluxiopath>]<br>     [unpin <path>]<br>     [unsetTtl <path>]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">命令很多，如果熟悉Linux命令的话，掌握起来不难。我们重点看几个命令</span><br><span class="line"></span><br><span class="line">* checkConsistency</span><br><span class="line"></span><br><span class="line">	对比某个给定路径下Allluxio及底层存储系统的元数据。给出的路径是目录，会比较所有子内容。检查的是目录子树的读锁，在命令完成之前，无法对目录子树文件/目录进行更新或者写操作。</span><br><span class="line"></span><br><span class="line">* copyFromLocal</span><br></pre></td></tr></table></figure></path></path></alluxiopath></path></path></path></bytes></path></format></time></path></path></path></path></path></path></dst></src></ufsuri></alluxiopath></path1></path></path></path></path></path></bytes></path></path></path></lineageid></dst></src></path></localdst></src></remotedst></src></path></group></owner></path></mode></path></group></alluxio></alluxio></path></p>
+<p>// 将本地文件/目录 拷贝到alluxio里面<br>[hdfs@p1 bin]$ ./alluxio fs  copyFromLocal /opt/fm.text  /123<br>Copied file:///opt/fm.text to /123<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* free </span><br><span class="line"></span><br><span class="line">将文件从释放中释放，前提是这个文件已经持久化到UFS了，不然是没办法释放的。</span><br></pre></td></tr></table></figure></p>
+<p>[hdfs@p1 bin]$ ./alluxio fs free /123<br>Cannot free file /123 which is not persisted<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">* location</span><br><span class="line"></span><br><span class="line">显示文件所在的worker</span><br></pre></td></tr></table></figure></p>
+<p>[hdfs@p1 bin]$ ./alluxio fs location /123<br>/123 with file id 16810770431 is on nodes:<br>p3<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* mount</span><br></pre></td></tr></table></figure></p>
+<p>//显示所有挂载点<br>[hdfs@p1 bin]$ ./alluxio fs mount<br>hdfs://p1:8020                                                on  /                    (hdfs, capacity=70.64GB, used=1191.04MB(1%), not read-only, not shared, properties={})<br>// 挂载hdfs://p1:8020/meta 到/meta下<br>[root@p1 bin]# ./alluxio fs mount /meta hdfs://p1:8020/meta<br>Mounted hdfs://p1:8020/meta at /meta<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* unMount</span><br><span class="line"></span><br><span class="line">取消挂载点</span><br></pre></td></tr></table></figure></p>
+<p>[root@p1 bin]# ./alluxio fs unmount /meta<br>Unmounted /meta<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* persist</span><br></pre></td></tr></table></figure></p>
+<p>// 将aluxio的/1234目录持久化到hdfs中<br>[root@p1 bin]# ./alluxio fs persist /1234<br>persisted file /1234 with size 46</p>
+<p>// 查看hdfs是否持久化了，我们初始化时候是挂载hdfs目录/alluxio/home到alluxio中的<br>[root@p1 bin]# hdfs dfs -ls /alluxio/home<br>SLF4J: Class path contains multiple SLF4J bindings.<br>SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/jars/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]<br>SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/lib/hadoop/lib/alluxio-1.8.1-client.jar!/org/slf4j/impl/StaticLoggerBinder.class]<br>SLF4J: See <a href="http://www.slf4j.org/codes.html#multiple_bindings" target="_blank" rel="noopener">http://www.slf4j.org/codes.html#multiple_bindings</a> for an explanation.<br>SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]<br>Found 2 items<br>-rw-r–r–   2 hdfs supergroup         46 2019-11-14 11:36 /alluxio/home/1234<br>drwxr-xr-x   -                          0 2019-11-14 10:20 /alluxio/home/default_tests_files<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* setTtl</span><br><span class="line"></span><br><span class="line">  * --action deltele 参数(alluxio和ufs里面都会删除)</span><br></pre></td></tr></table></figure></p>
+<p>// 设置5秒后删除（alluxio和hdfs里面都会删除）<br>[root@p1 bin]# ./alluxio fs setTtl –action delete /1234 5000<br>TTL of path ‘/1234’ was successfully set to 5000 milliseconds, with expiry action set to DELETE</p>
+<p>//5秒后，查看alluxio（/1234 没了）<br>[root@p1 bin]# ./alluxio fs ls /<br>             46   NOT_PERSISTED 11-14-2019 10:46:46:775 100% /123<br>             46   NOT_PERSISTED 11-14-2019 10:47:18:184 100% /12345<br>             12       PERSISTED 11-14-2019 10:20:41:992  DIR /default_tests_files<br>             46   NOT_PERSISTED 11-14-2019 10:44:37:127 100% /fm.text</p>
+<p>// 5秒后，查看hdfs（/1234 没了）<br>[root@p1 bin]# hdfs dfs -ls /alluxio/home<br>SLF4J: Class path contains multiple SLF4J bindings.<br>SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/jars/slf4j-log4j12-1.7.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]<br>SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/lib/hadoop/lib/alluxio-1.8.1-client.jar!/org/slf4j/impl/StaticLoggerBinder.class]<br>SLF4J: See <a href="http://www.slf4j.org/codes.html#multiple_bindings" target="_blank" rel="noopener">http://www.slf4j.org/codes.html#multiple_bindings</a> for an explanation.<br>SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]<br>Found 1 items<br>drwxr-xr-x   -          0 2019-11-14 10:20 /alluxio/home/default_tests_files                       </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 7.3通过hadoop命令来操作Alluxio</span><br><span class="line"></span><br><span class="line">Alluxio提供了兼容HDFS的接口，因此我们可以在执行hdfs命令时候，通过alluxio client 传递给allxuio 实现操作alluxio的目的。</span><br><span class="line"></span><br><span class="line">* 在cm控制台，修改hadoop-env.sh </span><br><span class="line"></span><br><span class="line">[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-wfGMhSB5-1574129851147)(/Users/huangfan/Desktop/hadoop-env.png)]</span><br><span class="line"></span><br><span class="line">* 操作alluxio里面文件</span><br></pre></td></tr></table></figure>
+<p>// 查看allxuio全部文件<br>[root@p1 bin]# hdfs dfs -ls alluxio://localhost:19998/<br>Found 4 items<br>-rw-r–r–   3         46 2019-11-14 10:46 alluxio://localhost:19998/123<br>-rw-r–r–   3         46 2019-11-14 10:47 alluxio://localhost:19998/12345<br>drwxr-xr-x   -         12 2019-11-14 11:49 alluxio://localhost:19998/default_tests_files<br>-rw-r–r–   3         46 2019-11-14 11:54 alluxio://localhost:19998/fm.text<br>// 创建文件并查看<br>[root@p1 bin]# hdfs dfs -mkdir  alluxio://localhost:19998/from-hdfs<br>[root@p1 bin]# hdfs dfs -ls alluxio://localhost:19998/<br>Found 5 items<br>-rw-r–r–   3         46 2019-11-14 10:46 alluxio://localhost:19998/123<br>-rw-r–r–   3         46 2019-11-14 10:47 alluxio://localhost:19998/12345<br>drwxr-xr-x   -         12 2019-11-14 11:49 alluxio://localhost:19998/default_tests_files<br>-rw-r–r–   3         46 2019-11-14 11:54 alluxio://localhost:19998/fm.text<br>drwxrwxrwx   -          0 2019-11-14 12:08 alluxio://localhost:19998/from-hdfs<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 8、与计算框架整合</span><br><span class="line"></span><br><span class="line">计算框架使用```alluxio client```需要在同一个JVM里面，且在```classpath```下能够找到```alluxio client```。</span><br><span class="line">编译打包后```alluxio client```在```$&#123;ALLUXIO_HOME&#125;/client```下。</span><br><span class="line"></span><br><span class="line">### 8.1 与MapReduce整合</span><br><span class="line"></span><br><span class="line">#### 8.1.1 整合方式</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* ```-libjars```命令，它会把```alluxio client ```放到Hadoop的Distributed Cache中，所有节点均可以访问到。</span><br><span class="line"></span><br><span class="line">* 手动将```alluxio client```放到每个MapReduce的```$&#123;HADOOP_HOME&#125;/lib```下，对于我的CDH是在```/opt/cloudera/parcels/CDH/lib/hadoop/lib```下。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 8.1.2 验证</span><br><span class="line"></span><br><span class="line">##### 命令验证</span><br></pre></td></tr></table></figure></p>
+<p>[hdfs@p1 bin]$ pwd<br>/opt/alluxio/integration/checker/bin<br>[hdfs@p1 bin]$ ./alluxio-checker.sh mapreduce<br>… 省略 …<br><strong>*</strong> Integration test passed. <strong>*</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">##### wordcount验证</span><br><span class="line"></span><br><span class="line">* 准备被统计的文件</span><br></pre></td></tr></table></figure></p>
+<p>// 将${ALLUXIO_HOME}下的LICENSE文件拷贝到alluxio中<br>[hdfs@p1 lib]$ /opt/alluxio/bin/alluxio fs  copyFromLocal /opt/alluxio/LICENSE /input</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">* wordcount</span><br></pre></td></tr></table></figure>
+<p>// 我的 cdh 的hadoop 安装目录在 /opt/cloudera/parcels/CDH/lib<br>[hdfs@p1 opt]$ cd /opt/cloudera/parcels/CDH/lib<br>// 执行 wordcount<br>[hdfs@p1 lib]$ hadoop jar hadoop-mapreduce/hadoop-mapreduce-examples-2.6.0-cdh5.15.2.jar wordcount -libjars /opt/alluxio/client/alluxio-1.8.1-client.jar alluxio://p1:19998/input   alluxio://p1:19998/output<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">* 到alluxio的Web UI统计信息</span><br><span class="line">	 </span><br><span class="line">[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-MhB1n816-1574129851147)(/Users/huangfan/Desktop/wordcount.png)]</span><br><span class="line"></span><br><span class="line">### 8.2 与Hive整合</span><br><span class="line"></span><br><span class="line">前提：alluxio与MapReduce整合成功。</span><br><span class="line"></span><br><span class="line">我在cm控制台修改hive.env.sh 文件，其他方式请自行找到hive-env.sh 文件修改</span><br><span class="line"></span><br><span class="line">添加：</span><br><span class="line"></span><br><span class="line">```HIVE_AUX_JARS_PATH=/usr/local/git/alluxio/client/alluxio-1.8.1-client.jar:$&#123;HIVE_AUX_JARS_PATH&#125;</span><br></pre></td></tr></table></figure></p>
+<p>[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-S7BksU1N-1574129851147)(/Users/huangfan/Desktop/hive.env.png)]</p>
+<h4 id="8-2-1-存储部分Hive表"><a href="#8-2-1-存储部分Hive表" class="headerlink" title="8.2.1 存储部分Hive表"></a>8.2.1 存储部分Hive表</h4><p>场景：常用的表存储在Alluxio中，获取高吞吐量和低延迟。</p>
+<p>准备：<a href="https://grouplens.org/datasets/movielens/" target="_blank" rel="noopener">下载文件</a> 下载ml-100k.zip 文件，上传到服务器上，例如我上传到<figure class="highlight plain"><figcaption><span>/opt```下，解压。拷贝到Alluxios上</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>[hdfs@p1 opt]$ alluxio/bin/alluxio fs mkdir  /ml-100<br>[hdfs@p1 opt]$ alluxio/bin/alluxio fs copyFromLocal /opt/ml-100k/u.user alluxio://localhost:19998/ml-100<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 存储内部表</span><br></pre></td></tr></table></figure></p>
+<p>CREATE TABLE u_user (<br>userid INT,<br>age INT,<br>gender CHAR(1),<br>occupation STRING,<br>zipcode STRING)<br>ROW FORMAT DELIMITED<br>FIELDS TERMINATED BY ‘|’<br>LOCATION ‘alluxio://p1:19998/ml-100’;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 存储外部表</span><br></pre></td></tr></table></figure></p>
+<p>CREATE EXTERNAL TABLE hive_hdfs (<br>userid INT,<br>age INT,<br>gender CHAR(1),<br>occupation STRING,<br>zipcode STRING)<br>ROW FORMAT DELIMITED<br>FIELDS TERMINATED BY ‘|’;<br>LOCATION ‘alluxio://p1:19998/ml-100’;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">此时hive内部表的存储位置变成了```ml-100```目录下，不是在默认的hdfs下面了。内部表，在hive里面删除表```u_user```时候，alluxio里存储的```/ml-100```也会被删除。外部表，在hive里面删除表```u_user```时候，alluxio里面的```/ml-100```不会被删除。</span><br><span class="line"></span><br><span class="line">*  使用hdfs里面的表</span><br></pre></td></tr></table></figure></p>
+<p>hive&gt; alter table u_user set location “alluxio://127.0.0.1:19998/tables/u_user”;<br>OK<br>Time taken: 3.572 seconds<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 恢复到hdfs里面</span><br></pre></td></tr></table></figure></p>
+<p>hive&gt; alter table u_user set location “hdfs://127.0.0.1:8020/alluxio/home”;<br>OK<br>Time taken: 1.554 seconds<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#### 8.2.1 存储全部Hive表</span><br><span class="line"></span><br><span class="line">这种情况是Hive使用Alluxio作为默认文件系统替代hdfs。</span><br><span class="line"></span><br><span class="line">* 修改```hive-siet.xml</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;alluxio://localhost:19998&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+<p>案例就不演示了，因为hive底层还是用hdfs好些，节省空间。</p>
+<h3 id="8-3-与Presto整合"><a href="#8-3-与Presto整合" class="headerlink" title="8.3 与Presto整合"></a>8.3 与Presto整合</h3><p>版本：presto-server-0.228</p>
+<p>Prest是从HiveMetaStore里面获取元数据信息，然后通过元数据信息来获取底层ufs（这里是hdfs），它查询数据不是像hive那样提交MapReduce，而是直接操作底层ufs。</p>
+<h4 id="8-3-1-下载配置presto"><a href="#8-3-1-下载配置presto" class="headerlink" title="8.3.1 下载配置presto"></a>8.3.1 下载配置presto</h4><p><a href="https://prestodb.io/docs/current/installation/deployment.html" target="_blank" rel="noopener">presto下载配置移步</a></p>
+<p>其他基本配置可以参照官网，其中catalog配置是关键，我这<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>connector.name=hive-hadoop2<br>hive.metastore.uri=thrift://p1:9083<br>// 保证presto可以访问到hdfs<br>hive.config.resources=/etc/hive/conf/core-site.xml,/etc/hive/conf/hdfs-site.xml<br>hive.allow-drop-table=false<br>hive.allow-rename-table=false<br>hive.allow-add-column=false<br>hive.allow-rename-column=false<br>hive.force-local-scheduling=true<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">将```$&#123;ALLUXIO_HOME&#125;/conf```下的```alluxio-site.properties```文件路径加到presto的```jvm.config```中，这样在allxuio里面设置的属性会应用到presto</span><br></pre></td></tr></table></figure></p>
+<p>-Xbootclasspath/p:/opt/alluxio/conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**做以下几个配置**</span><br><span class="line"></span><br><span class="line"> * 读写超时配置（```alluxio-site.properties```）</span><br></pre></td></tr></table></figure></p>
+<p> // sec、min、hour、day结尾的配置都可以，从源码看到，代码层做了自适应<br> alluxio.user.network.netty.timeout=10min<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"> </span><br><span class="line">* 启用Presto中数据本地性（```$&#123;PRESTO_HOME/etc/catalog/hive.properties&#125; ```）</span><br><span class="line">&gt; 一般 Presto worker 与 Alluxio worker 同置部署，开启这个属性后，pesto处理分片的工作可以被调度到有该分片的机器上。</span><br></pre></td></tr></table></figure></p>
+<p>hive.force-local-scheduling=true<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">注意：网上很多说，presto调度是基于Alluxio worker的文件块地址与Presto worker地址之间的字符串匹配进行的（没看pesto源码我不确定）</span><br><span class="line"></span><br><span class="line">* 设置Presto分布式查询粒度（```$&#123;PRESTO_HOME/etc/catalog/hive.properties&#125; ```）</span><br></pre></td></tr></table></figure></p>
+<pre><code>// 默认 alluxio.user.block.size.bytes.default=512M，我们需要将查询分割设置&gt;512MB，减少presto在同一个块上多次并行查询带来相互阻塞。
+hive.max-split-size=600MB
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">* 更改读写类型（```alluxio-site.properties```）</span><br></pre></td></tr></table></figure>
+
+//默认读，首先将数据块从SSD或者HDD移动到MEM，然后再读取MEM中的数据块
+ alluxio.user.file.readtype.default=CACHE_PROMOTE
+ // 双写（内存和ufs），默认写是MUST_CACHE，只写内存
+ alluxio.user.file.writetype.default=CACHE_THROUGH
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">## 8、配置使用</span><br><span class="line"></span><br><span class="line">### 8.1 服务端配置</span><br><span class="line">主要配置都是在```$&#123;ALLUXIO_HOME&#125;/conf```下的```alluxio-site.properties```配置里面，集群内所有的机器上都需要设置。可以在alluxio的Web UI 界面看每个属性配置的值/默认值。</span><br><span class="line"></span><br><span class="line">![在这里插入图片描述](https://img-blog.csdnimg.cn/2019111910284938.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h1YW5nZmFuMzIy,size_16,color_FFFFFF,t_70)</span><br><span class="line"></span><br><span class="line">### 8.2 客户端配置</span><br><span class="line"></span><br><span class="line">alluxio客户端的初始化是以集群master配置新来初始化的，也就是在```$&#123;ALLUXIO_CONF&#125;/conf```下 ```alluxio-site.properties```里面配置的信息会应用到客户端的初始化。例如设置写类型：```alluxio.user.file.writetype.default=CACHE_THROUGH```。</span><br><span class="line">当然这样一刀切的配置肯定不是最优的，可以通过在客户端设置：```alluxio.user.conf.cluster.default.enable=false```来忽略或者覆盖集群范围内默认值，客户端的配置一般是通过设置JVM参数&quot;-D&quot;，或者通过api在代码里面设置。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 8.3 配置工具</span><br><span class="line"></span><br><span class="line">alluxi 提供了一些在配置时候提高效率的小工具，说到底就是shell脚本来，具体可以看```$&#123;ALLUXIO_HOME&#125;/conf/alluxio```这个脚本内容。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">* copyDir</span><br></pre></td></tr></table></figure>
+</code></pre><p>//同步配置到所有worker机器上，不用再傻傻scp了。<br>./alluxio copyDir [path to alluxio’s conf dir]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* getConf</span><br></pre></td></tr></table></figure></p>
+<p>// 查看属性值<br>[hdfs@p1 bin]# ./alluxio getConf   alluxio.user.file.writetype.default<br>CACHE_THROUGH<br>// 查看属性配置来源<br>[hdfs@p1 bin]# ./alluxio getConf –source  alluxio.user.file.writetype.default<br>SITE_PROPERTY (/usr/local/git/alluxio/conf/alluxio-site.properties)<br>// 查看集群默认配置<br>[root@p1 bin]# ./alluxio getConf –master</p>
+<p>alluxio.conf.dir=/usr/local/git/alluxio/conf<br>alluxio.conf.validation.enabled=true<br>alluxio.debug=false<br>alluxio.extensions.dir=/usr/local/git/alluxio/extensions<br>alluxio.fuse.cached.paths.max=500<br>alluxio.fuse.debug.enabled=false<br>alluxio.fuse.fs.name=alluxio-fuse<br>alluxio.fuse.maxwrite.bytes=128KB<br>alluxio.home=/usr/local/git/alluxio<br>alluxio.integration.master.resource.cpu=1<br>alluxio.integration.master.resource.mem=1024MB<br>alluxio.integration.mesos.alluxio.jar.url=<a href="http://downloads.alluxio.org/downloads/files/1.8.1/alluxio-1.8.1-bin.tar.gz" target="_blank" rel="noopener">http://downloads.alluxio.org/downloads/files/1.8.1/alluxio-1.8.1-bin.tar.gz</a><br>alluxio.integration.mesos.jdk.path=jdk1.8.0_151<br>alluxio.integration.mesos.jdk.url=LOCAL<br>alluxio.integration.mesos.master.name=AlluxioMaster<br>alluxio.integration.mesos.master.node.count=1<br>alluxio.integration.mesos.principal=alluxio<br>alluxio.integration.mesos.role=*<br>alluxio.integration.mesos.secret=(no value set)<br>alluxio.integration.mesos.user=(no value set)<br>alluxio.integration.mesos.worker.name=AlluxioWorker<br>alluxio.integration.worker.resource.cpu=1<br>alluxio.integration.worker.resource.mem=1024MB<br>alluxio.integration.yarn.workers.per.host.max=1<br>…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 9、存储管理</span><br><span class="line"></span><br><span class="line">### 9.1 单层模式</span><br><span class="line"></span><br><span class="line">不需要设置，默认在集群启动时候，alluxio会为wokers分配ramdisk，</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### alluxio与ufs元数据同步</span><br><span class="line"></span><br><span class="line">* 客户端</span><br><span class="line"></span><br><span class="line">alluxio1.7 之后支持</span><br><span class="line"></span><br><span class="line">客户端调用时候，增加参数：```alluxio.user.file.metadata.sync.interval=int```，int&lt;0 永远不同步，int&gt;0 在间隔时间内不同步，int=0 操作之前，代理总是会同步路径的元数据</span><br></pre></td></tr></table></figure></p>
+<p>alluxio fs ls -R -Dalluxio.user.file.metadata.sync.interval=0 /dirpath<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">* 服务端异步</span><br><span class="line"></span><br><span class="line">alluxio 2.0 + HDFS 2.7 以上版本</span><br></pre></td></tr></table></figure></p>
+<p>// 启动<br>./alluxio fs startSync /syncedDirPath</p>
+<p>// 关闭<br>./alluxio fs stopSync /syncedDir<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 10、异常诊断和调试</span><br><span class="line"></span><br><span class="line">### 10.1 日志</span><br><span class="line"></span><br><span class="line">在```$&#123;ALLUXIO_HOME&#125;/logs```下，```*.log```为log4j 生成的，```*.out```是标准的输出和错误流重定向文件。一般我们查看```master.log 、worker.log、user_$&#123;USER&#125;.log```来排查问题。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 10.2 远程调试</span><br><span class="line"></span><br><span class="line">在 ```$&#123;ALLUXIO_HOME&#125;/conf```下的```alluxio-env.sh```配置调试的环境变量:</span><br></pre></td></tr></table></figure></p>
+<p>export ALLUXIO_WORKER_JAVA_OPTS=”$ALLUXIO_JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6606”<br>export ALLUXIO_MASTER_JAVA_OPTS=”$ALLUXIO_JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6607”<br>export ALLUXIO_USER_DEBUG_JAVA_OPTS=”-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=6609”<br><code>`</code></p>
+<p>然后我们就可以在 IntelliJ IDEA 或者Eclipse里面开启Remote Debug 调试了。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/05/Redis常见应用/" rel="next" title="Redis常见应用">
+                <i class="fa fa-chevron-left"></i> Redis常见应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/05/Kerberos/" rel="prev" title="Kerberos">
+                Kerberos <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">安迪·梵</p>
+              <div class="site-description motion-element" itemprop="description">keep it simple and stupid</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:huangfan0908@gmail.com" title="E-Mail &rarr; mailto:huangfan0908@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andyfan322" title="GitHub &rarr; https://github.com/Andyfan322" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/3984800033" title="Weibo &rarr; https://weibo.com/u/3984800033" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#alluxio简单使用"><span class="nav-text">alluxio简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、介绍"><span class="nav-text">1、介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、功能简介"><span class="nav-text">2、功能简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、下载编译"><span class="nav-text">3、下载编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、系统架构与原理"><span class="nav-text">5、系统架构与原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-与操作系统文件系统对比"><span class="nav-text">5.1 与操作系统文件系统对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-系统组件"><span class="nav-text">5.2 系统组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集群组成：master、worker、client、UFS（底层存储）"><span class="nav-text">集群组成：master、worker、client、UFS（底层存储）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-命中worker"><span class="nav-text">1.命中worker</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-未命worker"><span class="nav-text">2.未命worker</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、与HDFS集成"><span class="nav-text">6、与HDFS集成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-前提"><span class="nav-text">6.1 前提</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-1-存储部分Hive表"><span class="nav-text">8.2.1 存储部分Hive表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-与Presto整合"><span class="nav-text">8.3 与Presto整合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-1-下载配置presto"><span class="nav-text">8.3.1 下载配置presto</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安迪·梵</span>
+
+  
+
+  
+</div>
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+    appKey: 'scOU3TGgNidrzFxQLIYGHIJg',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+                'X-LC-Key': 'scOU3TGgNidrzFxQLIYGHIJg',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

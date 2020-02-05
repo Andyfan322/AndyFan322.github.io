@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="1、分布式锁 分布式锁本质上要实现的目标就是在 Redis 里面占一个“茅坑”，当别的进程也要来占时，发现已经有人蹲在那里了，就只好放弃或者稍后再试。  A、几种方式 setnx (set if not exit)  12345127.0.0.1:6379&amp;gt; setnx lock true(integer) 1127.0.0.1:6379&amp;gt; del lock(integer) 1127">
+<meta name="keywords" content="spring、分布式、架构、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis常见应用">
+<meta property="og:url" content="http://yoursite.com/2020/02/05/Redis常见应用/index.html">
+<meta property="og:site_name" content="xiaofang&#39;s blog">
+<meta property="og:description" content="1、分布式锁 分布式锁本质上要实现的目标就是在 Redis 里面占一个“茅坑”，当别的进程也要来占时，发现已经有人蹲在那里了，就只好放弃或者稍后再试。  A、几种方式 setnx (set if not exit)  12345127.0.0.1:6379&amp;gt; setnx lock true(integer) 1127.0.0.1:6379&amp;gt; del lock(integer) 1127">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-05T08:40:42.969Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis常见应用">
+<meta name="twitter:description" content="1、分布式锁 分布式锁本质上要实现的目标就是在 Redis 里面占一个“茅坑”，当别的进程也要来占时，发现已经有人蹲在那里了，就只好放弃或者稍后再试。  A、几种方式 setnx (set if not exit)  12345127.0.0.1:6379&amp;gt; setnx lock true(integer) 1127.0.0.1:6379&amp;gt; del lock(integer) 1127">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="xiaofang's blog" type="application/atom+xml">
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2020/02/05/Redis常见应用/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Redis常见应用 | xiaofang's blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/Andyfan322" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xiaofang's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/05/Redis常见应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="安迪·梵">
+      <meta itemprop="description" content="keep it simple and stupid">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xiaofang's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Redis常见应用
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-05 16:29:34 / 修改时间：16:40:42" itemprop="dateCreated datePublished" datetime="2020-02-05T16:29:34+08:00">2020-02-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2020/02/05/Redis常见应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/02/05/Redis常见应用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2020/02/05/Redis常见应用/" class="leancloud_visitors" data-flag-title="Redis常见应用">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1、分布式锁"><a href="#1、分布式锁" class="headerlink" title="1、分布式锁"></a>1、分布式锁</h2><blockquote>
+<p>分布式锁本质上要实现的目标就是在 Redis 里面占一个“茅坑”，当别的进程也要来占时，发现已经有人蹲在那里了，就只好放弃或者稍后再试。</p>
+</blockquote>
+<h3 id="A、几种方式"><a href="#A、几种方式" class="headerlink" title="A、几种方式"></a>A、几种方式</h3><ul>
+<li>setnx (set if not exit)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; setnx lock true</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; del lock</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<p>但是有个问题，如果逻辑执行到中间出现异常了，可能会导致 del 指令没有被调用，这样就会陷入死锁，锁永远得不到释放。</p>
+<ul>
+<li>setnx + expire</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; setnx lock true</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; expire lock  5</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<p>但是以上逻辑还有问题。如果在 setnx 和 expire 之间服务器进程突然挂掉了，可能是因为机器掉电或者是被人为杀掉的，就会导致 expire 得不到执行，也会造成死锁。为了解决这个疑难，Redis 开源社区涌现了一堆分布式锁的 library，专门用来解决这个问题。实现方法极为复杂。</p>
+<ul>
+<li>set <key> <value> [ex seconds] [nx]</value></key></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; set lock  true ex 5 nx</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; del lock</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure>
+<p>Redis 2.8 版本中作者加入了 set 指令的扩展参数，使得 setnx 和 expire 指令可以一起执行，彻底解决了分布式锁的乱象。从此以后所有的第三方分布式锁 library 可以休息了。</p>
+<h3 id="B、超时问题"><a href="#B、超时问题" class="headerlink" title="B、超时问题"></a>B、超时问题</h3><p>Redis 的分布式锁不能解决超时问题，如果在加锁和释放锁之间的逻辑执行的太长，以至于超出了锁的超时限制，就会出现问题。因为这时候第一个线程持有的锁过期了，临界区的逻辑还没有执行完，这个时候第二个线程就提前重新持有了这把锁，导致临界区代码不能得到严格的串行执行。</p>
+<ul>
+<li><p>最佳实践</p>
+<ul>
+<li>不要执行较长时间的任务</li>
+<li>set 的value设置一个随机数，释放锁时先匹配随机数是否一致，然后再删除 key。</li>
+<li>匹配 value 和删除 key 不是一个原子操作</li>
+<li><p>lua 脚本解决原子性，以python代码为例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tag = random.nextint()  # 随机数</span><br><span class="line">if redis.set(key, tag, nx=True, ex=5):</span><br><span class="line">    do_something()</span><br><span class="line">    redis.delifequals(key, tag)  # 自定义的 delifequals 指令</span><br><span class="line">    </span><br><span class="line"># delifequals</span><br><span class="line">if redis.call(&quot;get&quot;,KEYS[1]) == ARGV[1] then</span><br><span class="line">    return redis.call(&quot;del&quot;,KEYS[1])</span><br><span class="line">else</span><br><span class="line">    return 0</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>这也不是一个完美的方案，它只是相对安全一点，因为如果真的超时了，当前线程的逻辑没有执行完，其它线程也会乘虚而入。</p>
+<h3 id="C、可重入性"><a href="#C、可重入性" class="headerlink" title="C、可重入性"></a>C、可重入性</h3><blockquote>
+<p>可重入性是指线程在持有锁的情况下再次请求加锁，如果一个锁支持同一个线程的多次加锁，那么这个锁就是可重入的。如 Java 里的 ReentrantLock 就是可重入锁。Redis 分布式锁如果要支持可重入，需要对客户端的 set 方法进行包装，我用线程的 Threadlocal 变量存储当前持有锁的计数。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">import redis.clients.jedis.Jedis;</span><br><span class="line"></span><br><span class="line">public class RedisWithReentrantLock &#123;</span><br><span class="line"></span><br><span class="line">  private ThreadLocal&lt;Map&lt;String, Integer&gt;&gt; lockers = new ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  private Jedis jedis;</span><br><span class="line"></span><br><span class="line">  public RedisWithReentrantLock(Jedis jedis) &#123;</span><br><span class="line">    this.jedis = jedis;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private boolean _lock(String key) &#123;</span><br><span class="line">    return jedis.set(key, &quot;&quot;, &quot;nx&quot;, &quot;ex&quot;, 5L) != null;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private void _unlock(String key) &#123;</span><br><span class="line">    jedis.del(key);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private Map&lt;String, Integer&gt; currentLockers() &#123;</span><br><span class="line">    Map&lt;String, Integer&gt; refs = lockers.get();</span><br><span class="line">    if (refs != null) &#123;</span><br><span class="line">      return refs;</span><br><span class="line">    &#125;</span><br><span class="line">    lockers.set(new HashMap&lt;&gt;());</span><br><span class="line">    return lockers.get();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public boolean lock(String key) &#123;</span><br><span class="line">    Map&lt;String, Integer&gt; refs = currentLockers();</span><br><span class="line">    Integer refCnt = refs.get(key);</span><br><span class="line">    if (refCnt != null) &#123;</span><br><span class="line">      refs.put(key, refCnt + 1);</span><br><span class="line">      return true;</span><br><span class="line">    &#125;</span><br><span class="line">    boolean ok = this._lock(key);</span><br><span class="line">    if (!ok) &#123;</span><br><span class="line">      return false;</span><br><span class="line">    &#125;</span><br><span class="line">    refs.put(key, 1);</span><br><span class="line">    return true;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public boolean unlock(String key) &#123;</span><br><span class="line">    Map&lt;String, Integer&gt; refs = currentLockers();</span><br><span class="line">    Integer refCnt = refs.get(key);</span><br><span class="line">    if (refCnt == null) &#123;</span><br><span class="line">      return false;</span><br><span class="line">    &#125;</span><br><span class="line">    refCnt -= 1;</span><br><span class="line">    if (refCnt &gt; 0) &#123;</span><br><span class="line">      refs.put(key, refCnt);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      refs.remove(key);</span><br><span class="line">      this._unlock(key);</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public static void main(String[] args) &#123;</span><br><span class="line">    Jedis jedis = new Jedis();</span><br><span class="line">    RedisWithReentrantLock redis = new RedisWithReentrantLock(jedis);</span><br><span class="line">    System.out.println(redis.lock(&quot;fan&quot;));</span><br><span class="line">    System.out.println(redis.lock(&quot;fan&quot;));</span><br><span class="line">    System.out.println(redis.unlock(&quot;fan&quot;));</span><br><span class="line">    System.out.println(redis.unlock(&quot;fan&quot;));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="D、redisson"><a href="#D、redisson" class="headerlink" title="D、redisson"></a>D、redisson</h3><p>redis 官方推荐的redis分布式锁库，你想要的基本都有，<a href="https://github.com/redisson/redisson" target="_blank" rel="noopener">github地址</a></p>
+<h2 id="2、Bitmap位图"><a href="#2、Bitmap位图" class="headerlink" title="2、Bitmap位图"></a>2、Bitmap位图</h2><blockquote>
+<p>位图不是特殊的数据结构，它的内容其实就是普通的字符串，也就是 byte 数组。我们可以使用普通的 get/set 直接获取和设置整个位图的内容，也可以使用位图操作 getbit/setbit 等将 byte 数组看成「位数组」来处理。</p>
+</blockquote>
+<ul>
+<li><p>统计活跃用户</p>
+<ul>
+<li>set结构：sadd key,value （uesrId,1）,若用户数很大，则key会很多，不推荐</li>
+<li>位图操作：setbit key, offset, value （”activeUser”,userId，1）,此时userId 需要为整数不重复，且最好连续自增。</li>
+</ul>
+</li>
+<li><p>操作命令</p>
+<ul>
+<li>set key value 这个设置key的值（整体设）</li>
+<li>setbit key offset bit 设置value二进制中某个位置的值</li>
+<li>getbit key offset  获取value指定位置的值</li>
+<li>bitcount key [start end] 统计指定位置范围内 1 的个数，注意这里面的start和end是字符索引</li>
+<li>bitpos key bit [start] [end] 查找指定范围内出现的第一个 0 或 1</li>
+<li>bitfield key [get type offset] [set type offset value] [incrby type offset increment] 多个连续位操作（最长64位）</li>
+</ul>
+</li>
+</ul>
+<h2 id="3、HyperLogLog"><a href="#3、HyperLogLog" class="headerlink" title="3、HyperLogLog"></a>3、HyperLogLog</h2><blockquote>
+<p>用来做基数统计的算法，HyperLogLog 的优点是，在输入元素的数量或者体积非常非常大时，计算基数所需的空间总是固定 的、并且是很小的。占用内存12K，但是它的精确度不是很高，我们也无法知道某个key是否已经在其中了。</p>
+</blockquote>
+<ul>
+<li><p>统计uv（如：key为用户id）</p>
+<ul>
+<li>set结构：sadd key , scard key  如果数据页面uv很大，则不合适了</li>
+<li>HyperLogLog： pfadd key value ,pfcount key    </li>
+<li>多个页面的uv合并，可以使用pfmerge</li>
+</ul>
+</li>
+<li><p>set和HyperLogLog统计页面uv，set 的key为suv，HyperLogLog uv 为huv</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; sadd suv u1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; sadd suv u2</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; sadd suv u3</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; scard suv</span><br><span class="line">(integer) 3</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; pfadd huv u1 u2 u3</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; pfcount huv</span><br><span class="line">(integer) 3</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; pfadd huv u1 u2 u3</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; pfcount huv</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; pfadd huv2 u4 u5 u6</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; pfmerge huv huv2</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; pfcount huv</span><br><span class="line">(integer) 6</span><br></pre></td></tr></table></figure>
+<p>HyperLogLog这个数据结构的发明人名字叫Philippe Flajolet ，命令pf为首字母缩写。至于内存占用12K，<a href="https://www.slideshare.net/KaiZhang130/countdistinct-problem-88329470" target="_blank" rel="noopener">可以查看这个PPT。</a>   </p>
+<h2 id="4、BloomFilter布隆过滤器"><a href="#4、BloomFilter布隆过滤器" class="headerlink" title="4、BloomFilter布隆过滤器"></a>4、BloomFilter布隆过滤器</h2><blockquote>
+<p>布隆过滤器可以理解为一个不怎么精确的 set 结构，当你使用它的 contains 方法判断某个对象是否存在时，它可能会误判。当布隆过滤器说某个值存在时，这个值可能不存在；当它说不存在时，那就肯定不存在。</p>
+</blockquote>
+<ul>
+<li><p>目前布隆过滤器还是基于插件形式，我们直接通过docker 获取带插件的redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull redislabs/rebloom</span><br><span class="line">docker run --name redisBloom -d -p 6379:6379 redislabs/rebloom </span><br><span class="line">redis-cli</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>操作命令</p>
+<ul>
+<li><p>单个操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> 127.0.0.1:6379&gt; bf.add news 1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; bf.add news 2</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; bf.add news 3</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; bf.exists news 1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; bf.exists news 4</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li>多个操作</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; bf.madd news 11 22 33 44 55</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 1</span><br><span class="line">3) (integer) 1</span><br><span class="line">4) (integer) 1</span><br><span class="line">5) (integer) 1</span><br><span class="line">127.0.0.1:6379&gt; bf.mexists news 4 5 6 7 8 9</span><br><span class="line">1) (integer) 1</span><br><span class="line">2) (integer) 1</span><br><span class="line">3) (integer) 1</span><br><span class="line">4) (integer) 1</span><br><span class="line">5) (integer) 1</span><br><span class="line">6) (integer) 1</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code>* 布隆过滤器算法应用
+  * 新闻推荐系统，推送去重
+  * 爬虫url去重
+  * 垃圾邮件过滤
+  * HBase、Cassandra、LevelDB等使用它过滤不在的查询
+
+* 原理（粗略）
+
+
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-FRwmHX90-1570534107291)(/Users/huangfan/Downloads/16464301a0e26416-2.png)]
+
+每个布隆过滤器对应到 Redis 的数据结构里面就是一个大型的位数组和几个不一样的无偏 hash 函数(上图中的f g h)。所谓无偏就是能够把元素的 hash 值算得比较均匀。
+
+* 添加操作：使用多个hash函数对key进行hash计算，得到一个整数索引值，然后再和数组长度取模得到一个位置，再这将这几个位置置为1，就完成了操作。index=hash(key)%/tableSize，table[index]=1。
+
+* 判断key是否存在：把 hash 的几个位置都算出来，看看位数组中这几个位置是否都为 1，只要有一个位为 0，那么说明布隆过滤器中这个 key 不存在。如果都是 1，这并不能说明这个 key 就一定存在，只是极有可能存在，因为这些位被置为 1 可能是因为其它的 key 存在所致。如果这个位数组比较稀疏，判断正确的概率就会很大，如果这个位数组比较拥挤，判断正确的概率就会降低。
+* 空间占用估计
+     * 输入参数2个：<figure class="highlight plain"><figcaption><span>n为预计元素数量，f为错误率。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">     * 输出结果2个：```l,k```，l为位数组长度，k为最佳的hash函数个数。</span><br><span class="line"></span><br><span class="line">     </span><br><span class="line">## 5、限流  </span><br><span class="line"></span><br><span class="line">* 例子：限制一个用户一段时间发帖频率。关键点用户```userId```，一段时间```period```，发帖这个动作```actionKey```，限制次数```maxCount</span><br></pre></td></tr></table></figure>
+
+
+
+* 简单的限流方法，利用zset结构
+
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isActionAllowed</span><span class="params">(String userId, String actionKey, <span class="keyword">int</span> period, <span class="keyword">int</span> maxCount)</span> </span>&#123;</span><br><span class="line">   String key = String.format(<span class="string">"hist:%s:%s"</span>, userId, actionKey);</span><br><span class="line">   <span class="keyword">long</span> nowTs = System.currentTimeMillis();</span><br><span class="line">   <span class="comment">// 保障批量操作的事务性</span></span><br><span class="line">   Pipeline pipe = jedis.pipelined();</span><br><span class="line">   pipe.multi();</span><br><span class="line">   pipe.zadd(key, nowTs, <span class="string">""</span> + nowTs);</span><br><span class="line">   pipe.zremrangeByScore(key, <span class="number">0</span>, nowTs - period * <span class="number">1000</span>);</span><br><span class="line">   Response&lt;Long&gt; count = pipe.zcard(key);</span><br><span class="line">   pipe.expire(key, period + <span class="number">1</span>);</span><br><span class="line">   pipe.exec();</span><br><span class="line">   pipe.close();</span><br><span class="line">   <span class="keyword">return</span> count.get() &lt;= maxCount;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>漏斗限流方法<ul>
+<li>漏斗剩余空间：可持续进行的数量</li>
+<li>漏斗流水速率：允许行为最大的频率</li>
+</ul>
+</li>
+</ul>
+<p>使用Java代码实现漏斗限流方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">public class FunnelRateLimiter &#123;</span><br><span class="line"></span><br><span class="line">  static class Funnel &#123;</span><br><span class="line">    int capacity;</span><br><span class="line">    float leakingRate;</span><br><span class="line">    int leftQuota;</span><br><span class="line">    long leakingTs;</span><br><span class="line"></span><br><span class="line">    public Funnel(int capacity, float leakingRate) &#123;</span><br><span class="line">      this.capacity = capacity;//漏斗容量</span><br><span class="line">      this.leakingRate = leakingRate;//漏斗流水速率</span><br><span class="line">      this.leftQuota = capacity;//漏斗剩余空间</span><br><span class="line">      this.leakingTs = System.currentTimeMillis();//上一次漏水时间</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void makeSpace() &#123;</span><br><span class="line">      long nowTs = System.currentTimeMillis();</span><br><span class="line">      long deltaTs = nowTs - leakingTs;//距离上一次漏水过去了多久</span><br><span class="line">      int deltaQuota = (int) (deltaTs * leakingRate);//可腾出的空间</span><br><span class="line">      if (deltaQuota &lt; 0) &#123; // 间隔时间太长，整数数字过大溢出</span><br><span class="line">        this.leftQuota = capacity;</span><br><span class="line">        this.leakingTs = nowTs;</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line">      if (deltaQuota &lt; 1) &#123; // 腾出空间太小，最小单位是1</span><br><span class="line">        return;</span><br><span class="line">      &#125;</span><br><span class="line">      this.leftQuota += deltaQuota;</span><br><span class="line">      this.leakingTs = nowTs;</span><br><span class="line">      if (this.leftQuota &gt; this.capacity) &#123;</span><br><span class="line">        this.leftQuota = this.capacity;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // quota 倒入漏斗的水容量</span><br><span class="line">    boolean watering(int quota) &#123;</span><br><span class="line">      makeSpace();</span><br><span class="line">      if (this.leftQuota &gt;= quota) &#123;</span><br><span class="line">        this.leftQuota -= quota;</span><br><span class="line">        return true;</span><br><span class="line">      &#125;</span><br><span class="line">      return false;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private Map&lt;String, Funnel&gt; funnels = new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  public boolean isActionAllowed(String userId, String actionKey, int capacity, float leakingRate) &#123;</span><br><span class="line">    String key = String.format(&quot;%s:%s&quot;, userId, actionKey);</span><br><span class="line">    Funnel funnel = funnels.get(key);</span><br><span class="line">    if (funnel == null) &#123;</span><br><span class="line">      funnel = new Funnel(capacity, leakingRate);</span><br><span class="line">      funnels.put(key, funnel);</span><br><span class="line">    &#125;</span><br><span class="line">    return funnel.watering(1); // 需要1个quota</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> Redis 4.0 之后可以安装限流模块，它叫 <a href="https://github.com/brandur/redis-cell" target="_blank" rel="noopener">redis-cell</a>。该模块也使用了漏斗算法，并提供了原子的限流指令。该模块只有1条指令cl.throttle。</p>
+<ul>
+<li>cl.throttle xiaoming:reply 15 30 60 1 </li>
+<li>该命令意思：允许小明回复行为的频率是60s最多30次，即2秒1次的速率，漏斗的初始容量15次（即一开始可以连续回复15个帖子），</li>
+</ul>
+<p>我下载最新版本redis，操作如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 安装redis</span><br><span class="line">brew install redis</span><br><span class="line"></span><br><span class="line">// 到redis的bin下，加载下载的redis-cell模块</span><br><span class="line">./redis-server --loadmodule /usr/local/Cellar/redis/5.0.5/extend/libredis_cell.dylib</span><br><span class="line">127.0.0.1:6379&gt; cl.throttle xiaoming:reply 15 30 60 1</span><br><span class="line">1) (integer) 0 # 0 表示允许，1表示拒绝</span><br><span class="line">2) (integer) 16 # 漏斗容量capacity（15+1，15 是从0开始计数的）</span><br><span class="line">3) (integer) 15 # 漏斗剩余空间left_quota（16-1）</span><br><span class="line">4) (integer) -1 # 如果拒绝了，需要多长时间后再试(漏斗有空间了，单位秒)</span><br><span class="line">5) (integer) 2 # 多长时间后，漏斗完全空出来(left_quota==capacity，单位秒)</span><br></pre></td></tr></table></figure>
+<h2 id="5、GeoHash（距离计算）"><a href="#5、GeoHash（距离计算）" class="headerlink" title="5、GeoHash（距离计算）"></a>5、GeoHash（距离计算）</h2><ul>
+<li>GeoHash 算法</li>
+</ul>
+<p>GeoHash 算法将二维的经纬度数据映射到一维的整数，这样所有的元素都将在挂载到一条线上，距离靠近的二维坐标映射到一维后的点之间距离也会很接近。当我们想要计算「附近的人时」，首先将目标位置映射到这条线上，然后在这个一维的线上获取附近的点就行了。</p>
+<p>那这个映射算法具体是怎样的呢？它将整个地球看成一个二维平面，然后划分成了一系列正方形的方格，就好比围棋棋盘。所有的地图元素坐标都将放置于唯一的方格中。方格越小，坐标越精确。然后对这些方格进行整数编码，越是靠近的方格编码越是接近。那如何编码呢？一个最简单的方案就是切蛋糕法。设想一个正方形的蛋糕摆在你面前，二刀下去均分分成四块小正方形，这四个小正方形可以分别标记为 00,01,10,11 四个二进制整数。然后对每一个小正方形继续用二刀法切割一下，这时每个小小正方形就可以使用 4bit 的二进制整数予以表示。然后继续切下去，正方形就会越来越小，二进制整数也会越来越长，精确度就会越来越高。</p>
+<ul>
+<li>Geo命令<ul>
+<li>新增：geoadd bike  116.562108 39.787602 bike1 116.334255 40.027400 bike2 新增bike1和bike2 的经纬度</li>
+<li>距离：geodist bike bike1 bike2 km  //计算bike1和bike2之间的距离，单位km</li>
+<li>元素附近：georadiusbymember bike bike1 2 km count 3 desc  //在bike1附近2km内的3个自行车，距离从远到近</li>
+<li>坐标附近：georadius bike 116.334255 40.027400 5 km withdist count 2 asc  </li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379[2]&gt; geoadd bike 116.562108 39.787602 bike1</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379[2]&gt; geoadd bike 116.334255 40.027400 bike2</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379[2]&gt; geoadd bike 112.334255 30.028400 bike3</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379[2]&gt; geoadd bike 192.334255 10.028400 bike4</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379[2]&gt; geodist bike bike1 bike2</span><br><span class="line">&quot;33004.6915&quot;</span><br><span class="line">127.0.0.1:6379[2]&gt; geodist bike bike1 bike2 km</span><br><span class="line">&quot;33.0047&quot;</span><br><span class="line">127.0.0.1:6379[2]&gt; geodist bike bike1 bike3 km</span><br><span class="line">&quot;1151.5533&quot;</span><br><span class="line">127.0.0.1:6379[2]&gt; georadiusbymember bike bike1 2 km count 3 desc</span><br><span class="line">1) &quot;bike1&quot;</span><br><span class="line">2) &quot;haluo&quot;</span><br><span class="line">127.0.0.1:6379[2]&gt; georadius bike 116.334255 40.027400 5 km withdist count 2 asc</span><br><span class="line">1) 1) &quot;bike2&quot;</span><br><span class="line">   2) &quot;0.0002&quot;</span><br><span class="line">2) 1) &quot;mobai&quot;</span><br><span class="line">   2) &quot;0.0002&quot;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/05/Alluxio+Presto 查询/" rel="next" title="Alluxio+Presto 查询">
+                <i class="fa fa-chevron-left"></i> Alluxio+Presto 查询
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/05/Alluxio/" rel="prev" title="Alluxio">
+                Alluxio <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">安迪·梵</p>
+              <div class="site-description motion-element" itemprop="description">keep it simple and stupid</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:huangfan0908@gmail.com" title="E-Mail &rarr; mailto:huangfan0908@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Andyfan322" title="GitHub &rarr; https://github.com/Andyfan322" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/3984800033" title="Weibo &rarr; https://weibo.com/u/3984800033" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、分布式锁"><span class="nav-text">1、分布式锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#A、几种方式"><span class="nav-text">A、几种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B、超时问题"><span class="nav-text">B、超时问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C、可重入性"><span class="nav-text">C、可重入性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#D、redisson"><span class="nav-text">D、redisson</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、Bitmap位图"><span class="nav-text">2、Bitmap位图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、HyperLogLog"><span class="nav-text">3、HyperLogLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、BloomFilter布隆过滤器"><span class="nav-text">4、BloomFilter布隆过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、GeoHash（距离计算）"><span class="nav-text">5、GeoHash（距离计算）</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">安迪·梵</span>
+
+  
+
+  
+</div>
+<div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style="display:none">
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style="display:none">
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客
+</span>
+</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+    appKey: 'scOU3TGgNidrzFxQLIYGHIJg',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'yVPWrpq7A8OJvvyCxa58iAVT-gzGzoHsz',
+                'X-LC-Key': 'scOU3TGgNidrzFxQLIYGHIJg',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
