@@ -43,7 +43,7 @@
     <link href="http://yoursite.com/2020/02/05/Alluxio/"/>
     <id>http://yoursite.com/2020/02/05/Alluxio/</id>
     <published>2020-02-05T08:30:17.000Z</published>
-    <updated>2020-02-05T08:40:38.664Z</updated>
+    <updated>2020-02-05T09:36:46.904Z</updated>
     
     <summary type="html">
     
@@ -56,6 +56,8 @@
       
     
     </summary>
+    
+      <category term="大数据" scheme="http://yoursite.com/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
   </entry>
@@ -87,7 +89,7 @@
     <link href="http://yoursite.com/2020/02/05/Alluxio+Presto%20%E6%9F%A5%E8%AF%A2/"/>
     <id>http://yoursite.com/2020/02/05/Alluxio+Presto 查询/</id>
     <published>2020-02-05T08:28:01.000Z</published>
-    <updated>2020-02-05T08:28:42.326Z</updated>
+    <updated>2020-02-05T09:27:05.757Z</updated>
     
     <summary type="html">
     
@@ -100,6 +102,8 @@
       
     
     </summary>
+    
+      <category term="大数据" scheme="http://yoursite.com/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
       <category term="大数据" scheme="http://yoursite.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
@@ -135,7 +139,127 @@
     <link href="http://yoursite.com/2019/12/05/%E6%97%A5%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%91%BD%E4%BB%A4%EF%BC%8C%E5%8C%85%E6%8B%AClinux%EF%BC%8Cgit/"/>
     <id>http://yoursite.com/2019/12/05/日常用的一些命令，包括linux，git/</id>
     <published>2019-12-05T08:34:29.000Z</published>
-    <updated>2020-02-05T08:46:40.353Z</updated>
+    <updated>2020-02-05T09:31:21.639Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="命令" scheme="http://yoursite.com/categories/%E5%91%BD%E4%BB%A4/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>观察者模式</title>
+    <link href="http://yoursite.com/2019/11/15/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/11/15/观察者模式/</id>
+    <published>2019-11-15T09:22:35.000Z</published>
+    <updated>2020-02-05T09:33:31.856Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>命令模式</title>
+    <link href="http://yoursite.com/2019/11/11/%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/11/11/命令模式/</id>
+    <published>2019-11-11T09:23:52.000Z</published>
+    <updated>2020-02-05T09:33:43.087Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>建造者模式</title>
+    <link href="http://yoursite.com/2019/11/10/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/11/10/建造者模式/</id>
+    <published>2019-11-10T09:23:19.000Z</published>
+    <updated>2020-02-05T09:33:37.717Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>抽象工厂模式</title>
+    <link href="http://yoursite.com/2019/11/05/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/11/05/抽象工厂模式/</id>
+    <published>2019-11-05T09:20:58.000Z</published>
+    <updated>2020-02-05T09:32:59.185Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>工厂模式</title>
+    <link href="http://yoursite.com/2019/11/05/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/11/05/工厂模式/</id>
+    <published>2019-11-05T09:20:03.000Z</published>
+    <updated>2020-02-05T09:24:51.440Z</updated>
     
     <summary type="html">
     
@@ -153,11 +277,11 @@
   </entry>
   
   <entry>
-    <title>多线程</title>
-    <link href="http://yoursite.com/2019/10/05/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    <id>http://yoursite.com/2019/10/05/多线程/</id>
-    <published>2019-10-05T08:33:08.000Z</published>
-    <updated>2020-02-05T08:40:30.035Z</updated>
+    <title>策略模式</title>
+    <link href="http://yoursite.com/2019/11/05/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://yoursite.com/2019/11/05/策略模式/</id>
+    <published>2019-11-05T09:19:28.000Z</published>
+    <updated>2020-02-05T09:32:41.078Z</updated>
     
     <summary type="html">
     
@@ -170,6 +294,8 @@
       
     
     </summary>
+    
+      <category term="设计模式" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
     
   </entry>
@@ -269,11 +395,11 @@
   </entry>
   
   <entry>
-    <title>事务</title>
-    <link href="http://yoursite.com/2019/06/05/%E4%BA%8B%E5%8A%A1/"/>
-    <id>http://yoursite.com/2019/06/05/事务/</id>
-    <published>2019-06-05T08:35:06.000Z</published>
-    <updated>2020-02-05T08:47:10.241Z</updated>
+    <title>读写锁</title>
+    <link href="http://yoursite.com/2019/06/06/%E8%AF%BB%E5%86%99%E9%94%81/"/>
+    <id>http://yoursite.com/2019/06/06/读写锁/</id>
+    <published>2019-06-06T09:18:04.000Z</published>
+    <updated>2020-02-05T09:34:44.320Z</updated>
     
     <summary type="html">
     
@@ -286,16 +412,18 @@
       
     
     </summary>
+    
+      <category term="并发" scheme="http://yoursite.com/categories/%E5%B9%B6%E5%8F%91/"/>
     
     
   </entry>
   
   <entry>
-    <title>注册中心相关组件讨论</title>
-    <link href="http://yoursite.com/2019/05/25/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%9B%B8%E5%85%B3%E7%BB%84%E4%BB%B6%E8%AE%A8%E8%AE%BA/"/>
-    <id>http://yoursite.com/2019/05/25/注册中心相关组件讨论/</id>
-    <published>2019-05-25T03:58:14.000Z</published>
-    <updated>2019-05-26T12:49:43.771Z</updated>
+    <title>CountDownLatch</title>
+    <link href="http://yoursite.com/2019/06/05/CountDownLatch/"/>
+    <id>http://yoursite.com/2019/06/05/CountDownLatch/</id>
+    <published>2019-06-05T09:21:52.000Z</published>
+    <updated>2020-02-05T09:34:23.570Z</updated>
     
     <summary type="html">
     
@@ -308,16 +436,18 @@
       
     
     </summary>
+    
+      <category term="并发" scheme="http://yoursite.com/categories/%E5%B9%B6%E5%8F%91/"/>
     
     
   </entry>
   
   <entry>
-    <title>Vim 使用</title>
-    <link href="http://yoursite.com/2019/05/19/Vim-%E4%BD%BF%E7%94%A8/"/>
-    <id>http://yoursite.com/2019/05/19/Vim-使用/</id>
-    <published>2019-05-19T04:52:11.000Z</published>
-    <updated>2019-05-19T06:14:06.813Z</updated>
+    <title>可重入锁</title>
+    <link href="http://yoursite.com/2019/06/05/%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81/"/>
+    <id>http://yoursite.com/2019/06/05/可重入锁/</id>
+    <published>2019-06-05T09:09:14.000Z</published>
+    <updated>2020-02-05T09:35:33.626Z</updated>
     
     <summary type="html">
     
@@ -331,43 +461,17 @@
     
     </summary>
     
-      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
-    
-    
-      <category term="vim" scheme="http://yoursite.com/tags/vim/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python 若干基本语法</title>
-    <link href="http://yoursite.com/2019/05/05/Python-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/"/>
-    <id>http://yoursite.com/2019/05/05/Python-基本语法/</id>
-    <published>2019-05-05T10:14:10.000Z</published>
-    <updated>2019-05-05T10:56:16.708Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-      <category term="Python" scheme="http://yoursite.com/categories/Python/"/>
+      <category term="并发" scheme="http://yoursite.com/categories/%E5%B9%B6%E5%8F%91/"/>
     
     
   </entry>
   
   <entry>
-    <title>Spring IOC总览</title>
-    <link href="http://yoursite.com/2019/04/25/Spring-IOC1/"/>
-    <id>http://yoursite.com/2019/04/25/Spring-IOC1/</id>
-    <published>2019-04-25T03:56:22.000Z</published>
-    <updated>2019-04-29T07:46:26.863Z</updated>
+    <title>循环栅栏</title>
+    <link href="http://yoursite.com/2019/06/05/%E5%BE%AA%E7%8E%AF%E6%A0%85%E6%A0%8F/"/>
+    <id>http://yoursite.com/2019/06/05/循环栅栏/</id>
+    <published>2019-06-05T09:07:45.000Z</published>
+    <updated>2020-02-05T09:34:05.483Z</updated>
     
     <summary type="html">
     
@@ -381,83 +485,7 @@
     
     </summary>
     
-      <category term="spring" scheme="http://yoursite.com/categories/spring/"/>
-    
-    
-      <category term="基础" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring 概述</title>
-    <link href="http://yoursite.com/2019/04/24/Spring-IOC/"/>
-    <id>http://yoursite.com/2019/04/24/Spring-IOC/</id>
-    <published>2019-04-24T08:53:06.000Z</published>
-    <updated>2019-04-25T03:52:40.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-      <category term="spring" scheme="http://yoursite.com/categories/spring/"/>
-    
-    
-      <category term="基础" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>新的博客</title>
-    <link href="http://yoursite.com/2019/04/23/%E6%96%B0%E5%8D%9A%E5%AE%A2/"/>
-    <id>http://yoursite.com/2019/04/23/新博客/</id>
-    <published>2019-04-23T02:08:56.000Z</published>
-    <updated>2020-02-05T08:45:24.005Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-      <category term="心情" scheme="http://yoursite.com/categories/%E5%BF%83%E6%83%85/"/>
-    
-    
-      <category term="感情" scheme="http://yoursite.com/tags/%E6%84%9F%E6%83%85/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JVM</title>
-    <link href="http://yoursite.com/2019/03/05/JVM/"/>
-    <id>http://yoursite.com/2019/03/05/JVM/</id>
-    <published>2019-03-05T08:36:49.000Z</published>
-    <updated>2020-02-05T08:48:12.034Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
+      <category term="并发" scheme="http://yoursite.com/categories/%E5%B9%B6%E5%8F%91/"/>
     
     
   </entry>
